@@ -2,7 +2,10 @@ package com.wms.gestionalmaceng01.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +22,13 @@ import com.wms.gestionalmaceng01.repository.UsuarioRepository;
 
 @Controller
 public class AuthController {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+    
+    // ✅ Constantes para cumplir con la regla SonarQube java:S1192
+    private static final String DASHBOARD_USER = "dashboardusuario";
+    private static final String ERROR_KEY = "error";
+
     private final UsuarioRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -34,9 +44,27 @@ public class AuthController {
 
     @GetMapping("/dashboard")
     public String dashboard(Authentication auth, Model model) {
-        model.addAttribute("correo", auth.getName());
-        model.addAttribute("rol", auth.getAuthorities().toString());
-        return "dashboard";
+        String correo = auth.getName();
+        model.addAttribute("correo", correo);
+        
+        Optional<Usuario> usuarioOpt = userRepository.findByCorreo(correo);
+        
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            String rol = usuario.getRol();
+            model.addAttribute("rol", rol);
+            
+            log.info("Usuario: {} - Rol: {}", correo, rol);
+            
+            // ✅ Flujo limpio sin código redundante ni nulos
+            if ("ADMIN".equals(rol)) {
+                return "dashboardadmin";
+            } else if ("EMPLOYEE".equals(rol)) {
+                return "dashboardempleado";
+            }
+        }
+        
+        return DASHBOARD_USER;
     }
 
     @GetMapping("/api/verificar-usuario")
@@ -68,13 +96,13 @@ public class AuthController {
 
         var userOpt = userRepository.findByCorreo(email);
         if (userOpt.isEmpty()) {
-            respuesta.put("Error", "Usuario no encontrado");
+            respuesta.put(ERROR_KEY, "Usuario no encontrado");
             return ResponseEntity.badRequest().body(respuesta);
         }
 
         Usuario user = userOpt.get();
         if (!passwordEncoder.matches(actual, user.getClave())) {
-            respuesta.put("error", "Contraseña actual incorrecta");
+            respuesta.put(ERROR_KEY, "Contraseña actual incorrecta");
             return ResponseEntity.badRequest().body(respuesta);
         }
 
@@ -90,15 +118,15 @@ public class AuthController {
     @ResponseBody
     public ResponseEntity<Map<String, String>> crearUsuario(@RequestBody Map<String, String> datos) {
         Map<String, String> respuesta = new HashMap<>();
-        
-        // El frontend envía "correo" o "email"? Asegúrate que coincida
         String correo = datos.get("correo");
-        if (correo == null) {
-            correo = datos.get("email");  // Por si el frontend envía "email"
+
+        if (correo == null || correo.trim().isEmpty()) {
+            respuesta.put(ERROR_KEY, "El campo correo es obligatorio");
+            return ResponseEntity.badRequest().body(respuesta);
         }
 
         if (userRepository.existsByCorreo(correo)) {
-            respuesta.put("error", "El correo ya existe");
+            respuesta.put(ERROR_KEY, "El correo ya existe");
             return ResponseEntity.badRequest().body(respuesta);
         }
 

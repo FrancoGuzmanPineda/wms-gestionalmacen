@@ -1,0 +1,5 @@
+ .body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+        .navbar-custom { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .card-stats { border: none; border-radius: 15px; transition: transform 0.3s; }
+        .card-stats:hover { transform: translateY(-5px); }
+        .btn-logout { background: #dc3545; color: white; border: none; }

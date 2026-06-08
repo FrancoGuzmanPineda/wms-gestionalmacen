@@ -1,0 +1,6 @@
+.body { background: #1a1a2e; font-family: 'Segoe UI', sans-serif; }
+        .sidebar { background: #16213e; min-height: 100vh; }
+        .sidebar .nav-link { color: #fff; }
+        .sidebar .nav-link:hover { background: #0f3460; }
+        .content { padding: 20px; }
+        .card-stats { background: linear-gradient(135deg, #667eea, #764ba2); color: #211400; border: none; border-radius: 15px; }

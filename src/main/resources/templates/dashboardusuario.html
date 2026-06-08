@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuario - WMS Gestionalmacén</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-dashboard">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h3>🏭 WMS Gestionalmacén</h3>
+                        <p>Bienvenido, <strong th:text="${email}"></strong></p>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-md-6 mb-3"><div class="p-4 border rounded"><h4>📦 Consultar Productos</h4><p>Ver catálogo de productos</p></div></div>
+                            <div class="col-md-6 mb-3"><div class="p-4 border rounded"><h4>🛒 Mis Órdenes</h4><p>Ver historial de compras</p></div></div>
+                            <div class="col-md-6 mb-3"><div class="p-4 border rounded"><h4>👤 Mi Perfil</h4><p>Actualizar mis datos</p></div></div>
+                            <div class="col-md-6 mb-3"><div class="p-4 border rounded"><h4>🔐 Cambiar Contraseña</h4><p>Actualizar seguridad</p></div></div>
+                        </div>
+                        <a href="/logout" class="btn btn-logout mt-3">Cerrar Sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
