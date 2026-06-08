@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMS Gestionalmacén - Recuperar Contraseña</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+
+    <!-- Contenedor centrado vertical y horizontalmente -->
+    <div class="container min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="card border-0 shadow-sm w-100" style="max-width: 450px; border-radius: 1rem;">
+            
+            <!-- Encabezado de la Tarjeta con alto contraste aprobado por SonarQube -->
+            <div class="card-header bg-dark text-white p-4 text-center" style="border-radius: 1rem 1rem 0 0;">
+                <h1 class="h4 mb-1 fw-bold">¿Olvidaste tu contraseña?</h1>
+                <p class="small mb-0 text-white-50">Introduce tu correo electrónico para restablecer tus credenciales</p>
+            </div>
+            
+            <!-- Cuerpo de la Tarjeta -->
+            <div class="card-body p-4">
+                <form th:action="@{/recuperarclave}" method="post">
+                    
+                    <!-- Campo de Entrada -->
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-semibold text-secondary">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" class="form-control form-control-lg" 
+                               placeholder="ejemplo@almacen.com" required autocomplete="email">
+                        <div class="form-text text-muted">Le enviaremos un enlace seguro para generar una nueva contraseña.</div>
+                    </div>
+
+                    <!-- Botón de Envío usando componentes nativos de Bootstrap -->
+                    <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold mb-3" style="border-radius: 0.5rem;">
+                        Enviar enlace de recuperación
+                    </button>
+
+                    <!-- Enlace de regreso semántico -->
+                    <div class="text-center mt-3">
+                        <a th:href="@{/login}" class="link-primary text-decoration-none small fw-medium">
+                            &larr; Volver al inicio de sesión
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS (Opcional, por si añades interactividad más adelante) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76CUePJ/MxivTKHzQ7Mu86xafS5u2n5+2NRp4p-Gs6zLl84n0tRh4" crossorigin="anonymous"></script>
+</body>
+</html>

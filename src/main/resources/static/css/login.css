@@ -1,0 +1,110 @@
+.body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-card {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    border: none;
+}
+
+.card-header {
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.card-header.default { background: linear-gradient(135deg, #667eea, #764ba2); }
+.card-header.usuario { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
+.card-header.empleado { background: linear-gradient(135deg, #11998e, #38ef7d); }
+.card-header.admin { background: linear-gradient(135deg, #cb2d3e, #ef473a); }
+
+.card-header h2, .card-header p { color: white; margin: 0; }
+.card-header h2 { font-size: 28px; font-weight: 600; }
+.card-header p { opacity: 0.9; margin-top: 8px; }
+
+.card-body { padding: 30px; }
+
+.role-option {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background: white;
+}
+
+.role-option:hover { transform: translateY(-5px); }
+.role-option.selected { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.role-option.usuario.selected { border-color: #2193b0; background: #2193b015; }
+.role-option.empleado.selected { border-color: #11998e; background: #11998e15; }
+.role-option.admin.selected { border-color: #cb2d3e; background: #cb2d3e15; }
+
+.role-option i { font-size: 40px; display: block; margin-bottom: 10px; }
+.role-option.usuario i { color: #2193b0; }
+.role-option.empleado i { color: #11998e; }
+.role-option.admin i { color: #cb2d3e; }
+
+.role-option h4 { margin: 0 0 5px 0; font-size: 16px; }
+.role-option p { margin: 0; font-size: 12px; color: #666; }
+
+.form-control:focus { box-shadow: none; }
+.usuario-theme .form-control:focus { border-color: #2193b0; }
+.empleado-theme .form-control:focus { border-color: #11998e; }
+.admin-theme .form-control:focus { border-color: #cb2d3e; }
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-login:hover { transform: translateY(-2px); filter: brightness(1.05); }
+
+.alert-custom { border-radius: 10px; padding: 12px; margin-bottom: 20px; }
+.countdown-timer { background: #ff9800; color: #211400; text-align: center; padding: 12px; border-radius: 10px; margin-bottom: 20px; }
+
+.forgot-link { text-align: center; margin-top: 15px; }
+.usuario-theme .forgot-link a { color: #2193b0; }
+.empleado-theme .forgot-link a { color: #11998e; }
+.admin-theme .forgot-link a { color: #cb2d3e; }
+.forgot-link a { text-decoration: none; font-size: 14px; }
+
+.admin-actions { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
+.btn-admin { width: 100%; padding: 10px; background: linear-gradient(135deg, #cb2d3e, #ef473a); color: white; border: none; border-radius: 10px; font-weight: 600; }
+
+.modal-content-custom { border-radius: 20px; }
+.modal-header-custom { background: #4a5fc1; color: white; border-radius: 20px 20px 0 0; padding: 15px 20px; }
+.btn-modal { width: 100%; margin-top: 10px; }
+
+.role-icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 8px;
+}
+.role-icon-container svg {
+    width: 50px;
+    height: 50px;
+}
+
+/* Colores de fondo y relleno para calcar tu imagen */
+.icon-bg-user { background-color: #e8f5e9; }
+.svg-icon-user { fill: #26a6b1; }
+
+.icon-bg-employee { background-color: #fff3e0; }
+.svg-icon-employee { fill: #2e7d32; }
+
+.icon-bg-admin { background-color: #ffebee; }
+.svg-icon-admin { fill: #c62828; }
