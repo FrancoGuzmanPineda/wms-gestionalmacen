@@ -42,17 +42,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
             if (!rolSeleccionado) {
-                e.preventDefault();
                 mostrarError('Por favor, selecciona un rol primero');
                 return false;
             }
-            
-            document.getElementById('inputRolOculto').value = rolSeleccionado;
 
             console.log(`📝 Enviando login con rol: ${rolSeleccionado}`);
             // Aquí puedes agregar el rol al formulario si es necesario
             // this.action = `/login?rol=${rolSeleccionado}`;
+
+            const inputOculto = document.getElementById('inputRolOculto');
+            if (inputOculto) {
+                inputOculto.value = rolSeleccionado;
+            }
+
+            this.submit(); 
         });
     }
 });
