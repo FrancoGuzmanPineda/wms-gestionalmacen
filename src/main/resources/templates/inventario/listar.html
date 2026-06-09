@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario - WMS</title>
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>WMS</h2>
+            <p>Sistema de Gestión de Almacenes</p>
+        </div>
+
+        <nav>
+            <a href="#">Dashboard</a>
+            <a th:href="@{/inventario}" class="active">Inventario</a>
+            <a th:href="@{/recepcion}">Recepciones</a>
+            <a th:href="@{/productos}">Productos</a>
+            <a th:href="@{/categorias}">Categorías</a>
+            <a th:href="@{/ubicaciones}">Ubicaciones</a>
+            <a href="#">Reportes</a>
+            <a href="#">Usuarios</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <h3>Control de Inventario</h3>
+            <span>Administrador</span>
+        </header>
+
+        <section class="content">
+
+            <div class="page-header">
+                <div>
+                    <h1>Inventario</h1>
+                    <p>Gestión de productos y existencias del almacén</p>
+                </div>
+
+                <div class="buttons">
+                    <a th:href="@{/recepcion}" class="btn secondary">Registrar Recepción</a>
+                    <a th:href="@{/productos/nuevo}" class="btn primary">Nuevo Producto</a>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <a th:href="@{/inventario}" class="active">Productos</a>
+                <a th:href="@{/categorias}">Categorías</a>
+                <a th:href="@{/ubicaciones}">Ubicaciones</a>
+            </div>
+
+            <div class="filters">
+                <input type="text" placeholder="Buscar por código o nombre">
+                <select>
+                    <option>Categoría: Todas</option>
+                </select>
+                <select>
+                    <option>Estado: Todos</option>
+                </select>
+                <select>
+                    <option>Stock: Todos</option>
+                </select>
+                <button>Limpiar filtros</button>
+            </div>
+
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Tipo</th>
+                            <th>Stock Actual</th>
+                            <th>Stock Mínimo</th>
+                            <th>Unidad</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="producto : ${productos}">
+                            <td th:text="${producto.codigo}">PROD-001</td>
+                            <td th:text="${producto.nombre}">Producto</td>
+                            <td th:text="${producto.categoria.nombreCategoria}">Categoría</td>
+                            <td th:text="${producto.tipo.nombreTipo}">Tipo</td>
+                            <td th:text="${producto.stockActual}">0</td>
+                            <td th:text="${producto.stockMinimo}">0</td>
+                            <td th:text="${producto.unidadMedida}">Und</td>
+
+                            <td>
+                                <span th:if="${producto.stockActual == 0}" class="badge danger">
+                                    Sin Stock
+                                </span>
+
+                                <span th:if="${producto.stockActual > 0 and producto.stockActual <= producto.stockMinimo}" class="badge warning">
+                                    Bajo Stock
+                                </span>
+
+                                <span th:if="${producto.stockActual > producto.stockMinimo}" class="badge success">
+                                    Activo
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(productos)}">
+                            <td colspan="8" class="empty">
+                                No hay productos registrados.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card movimientos">
+                <h2>Últimos Movimientos de Ingreso</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Ubicación</th>
+                            <th>Usuario</th>
+                            <th>Movimiento</th>
+                            <th>Observación</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="movimiento : ${movimientos}">
+                            <td th:text="${movimiento.fecha}">Fecha</td>
+                            <td th:text="${movimiento.producto.nombre}">Producto</td>
+                            <td th:text="${movimiento.cantidad}">0</td>
+                            <td th:text="${movimiento.ubicacion.codigoEstante}">A-01</td>
+                            <td th:text="${movimiento.usuario.nombre}">Usuario</td>
+                            <td>
+                                <span class="badge success" th:text="${movimiento.tipoMovimiento}">
+                                    Ingreso
+                                </span>
+                            </td>
+                            <td th:text="${movimiento.observacion}">Observación</td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(movimientos)}">
+                            <td colspan="7" class="empty">
+                                No hay movimientos de ingreso registrados.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

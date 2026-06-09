@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos - WMS</title>
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>WMS</h2>
+            <p>Sistema de Gestión de Almacenes</p>
+        </div>
+
+        <nav>
+            <a href="#">Dashboard</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/recepcion}">Recepciones</a>
+            <a th:href="@{/productos}" class="active">Productos</a>
+            <a th:href="@{/categorias}">Categorías</a>
+            <a th:href="@{/ubicaciones}">Ubicaciones</a>
+            <a href="#">Reportes</a>
+            <a href="#">Usuarios</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <h3>Gestión de Productos</h3>
+            <span>Administrador</span>
+        </header>
+
+        <section class="content">
+
+            <div class="page-header">
+                <div>
+                    <h1>Productos</h1>
+                    <p>Registro y mantenimiento de productos del almacén</p>
+                </div>
+
+                <div class="buttons">
+                    <a th:href="@{/inventario}" class="btn secondary">Volver al Inventario</a>
+                    <a th:href="@{/productos/nuevo}" class="btn primary">Nuevo Producto</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Tipo</th>
+                        <th>Costo</th>
+                        <th>Precio Venta</th>
+                        <th>Stock</th>
+                        <th>Stock Mínimo</th>
+                        <th>Unidad</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="producto : ${productos}">
+                        <td th:text="${producto.codigo}">PROD-001</td>
+                        <td th:text="${producto.nombre}">Producto</td>
+                        <td th:text="${producto.categoria.nombreCategoria}">Categoría</td>
+                        <td th:text="${producto.tipo.nombreTipo}">Tipo</td>
+                        <td th:text="${producto.costo}">0.00</td>
+                        <td th:text="${producto.precioVenta}">0.00</td>
+                        <td th:text="${producto.stockActual}">0</td>
+                        <td th:text="${producto.stockMinimo}">0</td>
+                        <td th:text="${producto.unidadMedida}">Unidad</td>
+                        <td>
+                            <span class="badge success" th:text="${producto.estado}">Activo</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/productos/editar/{id}(id=${producto.idProducto})}" class="btn secondary">Editar</a>
+                            <a th:href="@{/productos/eliminar/{id}(id=${producto.idProducto})}" class="btn danger">Eliminar</a>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(productos)}">
+                        <td colspan="11" class="empty">No hay productos registrados.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Producto - WMS</title>
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>WMS</h2>
+            <p>Sistema de Gestión de Almacenes</p>
+        </div>
+
+        <nav>
+            <a href="#">Dashboard</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/recepcion}">Recepciones</a>
+            <a th:href="@{/productos}" class="active">Productos</a>
+            <a th:href="@{/categorias}">Categorías</a>
+            <a th:href="@{/ubicaciones}">Ubicaciones</a>
+            <a href="#">Reportes</a>
+            <a href="#">Usuarios</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <h3>Gestión de Productos</h3>
+            <span>Administrador</span>
+        </header>
+
+        <section class="content">
+
+            <div class="page-header">
+                <div>
+                    <h1 th:text="${producto.idProducto == null ? 'Nuevo Producto' : 'Editar Producto'}">
+                        Nuevo Producto
+                    </h1>
+                    <p>Complete la información del producto</p>
+                </div>
+
+                <div class="buttons">
+                    <a th:href="@{/productos}" class="btn secondary">Volver</a>
+                </div>
+            </div>
+
+            <div class="form-card">
+
+                <form th:action="@{/productos/guardar}" th:object="${producto}" method="post">
+
+                    <input type="hidden" th:field="*{idProducto}">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>Código</label>
+                            <input type="text" th:field="*{codigo}" placeholder="Ejemplo: PROD-001" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nombre del producto</label>
+                            <input type="text" th:field="*{nombre}" placeholder="Nombre del producto" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select th:field="*{categoria}" required>
+                                <option value="">Seleccione una categoría</option>
+                                <option th:each="categoria : ${categorias}"
+                                        th:value="${categoria.idCategoria}"
+                                        th:text="${categoria.nombreCategoria}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select th:field="*{tipo}" required>
+                                <option value="">Seleccione un tipo</option>
+                                <option th:each="tipo : ${tipos}"
+                                        th:value="${tipo.idTipo}"
+                                        th:text="${tipo.nombreTipo}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Costo</label>
+                            <input type="number" step="0.01" th:field="*{costo}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Precio de venta</label>
+                            <input type="number" step="0.01" th:field="*{precioVenta}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Stock actual</label>
+                            <input type="number" th:field="*{stockActual}" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Stock mínimo</label>
+                            <input type="number" th:field="*{stockMinimo}" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Unidad de medida</label>
+                            <input type="text" th:field="*{unidadMedida}" placeholder="Bolsa, Caja, Unidad, m3">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select th:field="*{estado}">
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <a th:href="@{/productos}" class="btn secondary">Cancelar</a>
+                        <button type="submit" class="btn primary">Guardar Producto</button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>
