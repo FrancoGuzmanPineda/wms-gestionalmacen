@@ -32,7 +32,7 @@ public class SecurityConfig {
             .userDetailsService(userDetailsService)
             .formLogin(form -> form
                 .loginPage(LOGIN_URL)
-                .loginProcessingUrl(LOGIN_URL)
+                .loginProcessingUrl("/perform_login")
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/dashboard", true)
