@@ -47,6 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 mostrarError('Por favor, selecciona un rol primero');
                 return false;
             }
+            
+            document.getElementById('inputRolOculto').value = rolSeleccionado;
+
             console.log(`📝 Enviando login con rol: ${rolSeleccionado}`);
             // Aquí puedes agregar el rol al formulario si es necesario
             // this.action = `/login?rol=${rolSeleccionado}`;

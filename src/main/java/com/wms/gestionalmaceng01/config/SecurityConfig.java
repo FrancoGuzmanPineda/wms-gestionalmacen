@@ -26,7 +26,6 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 // Uso de la constante en lugar del texto duplicado
-                .requestMatchers(LOGIN_URL, "/css/**", "/js/**", "/api/**").permitAll()
                 .requestMatchers(LOGIN_URL, "/recuperarclave", "/css/**", "/js/**", "/api/**").permitAll()
                 .anyRequest().authenticated()
             )
@@ -34,7 +33,7 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage(LOGIN_URL)
                 .loginProcessingUrl(LOGIN_URL)
-                .usernameParameter("email")
+                .usernameParameter("username")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/dashboard", true)
                 .failureUrl(LOGIN_URL + "?error=true")
