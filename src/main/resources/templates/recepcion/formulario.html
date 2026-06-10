@@ -17,7 +17,7 @@
         </div>
 
         <nav>
-            <a href="#">Dashboard</a>
+            <a th:href="@{/dashboard}">Dashboard</a>
             <a th:href="@{/inventario}">Inventario</a>
             <a th:href="@{/recepcion}" class="active">Recepciones</a>
             <a th:href="@{/productos}">Productos</a>
@@ -25,6 +25,7 @@
             <a th:href="@{/ubicaciones}">Ubicaciones</a>
             <a href="#">Reportes</a>
             <a href="#">Usuarios</a>
+            <a th:href="@{/logout}">Cerrar sesión</a>
         </nav>
     </aside>
 
@@ -33,7 +34,12 @@
 
         <header class="topbar">
             <h3>Recepción de Mercancía</h3>
-            <span>Administrador</span>
+
+            <span>
+                <strong th:text="${nombre}">Usuario</strong>
+                |
+                <small th:text="${rol}">ROL</small>
+            </span>
         </header>
 
         <section class="content">
@@ -45,6 +51,7 @@
                 </div>
 
                 <div class="buttons">
+                    <a th:href="@{/dashboard}" class="btn secondary">Volver al Dashboard</a>
                     <a th:href="@{/inventario}" class="btn secondary">Ver Inventario</a>
                 </div>
             </div>

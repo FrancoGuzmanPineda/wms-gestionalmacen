@@ -16,7 +16,7 @@
         </div>
 
         <nav>
-            <a href="#">Dashboard</a>
+            <a th:href="@{/dashboard}">Dashboard</a>
             <a th:href="@{/inventario}">Inventario</a>
             <a th:href="@{/recepcion}">Recepciones</a>
             <a th:href="@{/productos}" class="active">Productos</a>
@@ -24,6 +24,7 @@
             <a th:href="@{/ubicaciones}">Ubicaciones</a>
             <a href="#">Reportes</a>
             <a href="#">Usuarios</a>
+            <a th:href="@{/logout}">Cerrar sesión</a>
         </nav>
     </aside>
 
@@ -31,7 +32,12 @@
 
         <header class="topbar">
             <h3>Gestión de Productos</h3>
-            <span>Administrador</span>
+
+            <span>
+                <strong th:text="${nombre}">Usuario</strong>
+                |
+                <small th:text="${rol}">ROL</small>
+            </span>
         </header>
 
         <section class="content">
@@ -41,11 +47,12 @@
                     <h1 th:text="${producto.idProducto == null ? 'Nuevo Producto' : 'Editar Producto'}">
                         Nuevo Producto
                     </h1>
-                    <p>Complete la información del producto</p>
+                    <p>Complete la información del producto para el almacén</p>
                 </div>
 
                 <div class="buttons">
-                    <a th:href="@{/productos}" class="btn secondary">Volver</a>
+                    <a th:href="@{/dashboard}" class="btn secondary">Volver al Dashboard</a>
+                    <a th:href="@{/productos}" class="btn secondary">Volver a Productos</a>
                 </div>
             </div>
 
@@ -59,12 +66,18 @@
 
                         <div class="form-group">
                             <label>Código</label>
-                            <input type="text" th:field="*{codigo}" placeholder="Ejemplo: PROD-001" required>
+                            <input type="text"
+                                   th:field="*{codigo}"
+                                   placeholder="Ejemplo: PROD-001"
+                                   required>
                         </div>
 
                         <div class="form-group">
                             <label>Nombre del producto</label>
-                            <input type="text" th:field="*{nombre}" placeholder="Nombre del producto" required>
+                            <input type="text"
+                                   th:field="*{nombre}"
+                                   placeholder="Nombre del producto"
+                                   required>
                         </div>
 
                         <div class="form-group">
@@ -91,27 +104,45 @@
 
                         <div class="form-group">
                             <label>Costo</label>
-                            <input type="number" step="0.01" th:field="*{costo}" required>
+                            <input type="number"
+                                   step="0.01"
+                                   th:field="*{costo}"
+                                   placeholder="0.00"
+                                   required>
                         </div>
 
                         <div class="form-group">
                             <label>Precio de venta</label>
-                            <input type="number" step="0.01" th:field="*{precioVenta}" required>
+                            <input type="number"
+                                   step="0.01"
+                                   th:field="*{precioVenta}"
+                                   placeholder="0.00"
+                                   required>
                         </div>
 
                         <div class="form-group">
                             <label>Stock actual</label>
-                            <input type="number" th:field="*{stockActual}" min="0" required>
+                            <input type="number"
+                                   th:field="*{stockActual}"
+                                   min="0"
+                                   placeholder="0"
+                                   required>
                         </div>
 
                         <div class="form-group">
                             <label>Stock mínimo</label>
-                            <input type="number" th:field="*{stockMinimo}" min="0" required>
+                            <input type="number"
+                                   th:field="*{stockMinimo}"
+                                   min="0"
+                                   placeholder="0"
+                                   required>
                         </div>
 
                         <div class="form-group">
                             <label>Unidad de medida</label>
-                            <input type="text" th:field="*{unidadMedida}" placeholder="Bolsa, Caja, Unidad, m3">
+                            <input type="text"
+                                   th:field="*{unidadMedida}"
+                                   placeholder="Bolsa, Caja, Unidad, m3">
                         </div>
 
                         <div class="form-group">
