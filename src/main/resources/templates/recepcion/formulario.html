@@ -86,14 +86,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Tipo</label>
-                            <select name="idTipo" required>
-                                <option value="">Seleccione un tipo</option>
-                                <option th:each="tipo : ${tipos}"
-                                        th:value="${tipo.idTipo}"
-                                        th:text="${tipo.nombreTipo}">
-                                </option>
-                            </select>
+                            <label>Tipo de movimiento</label>
+                            <input type="text" value="Ingreso automático" readonly>
                         </div>
 
                         <div class="form-group">
@@ -146,6 +140,7 @@
                             <th>Cantidad</th>
                             <th>Ubicación</th>
                             <th>Usuario</th>
+                            <th>Tipo Movimiento</th>
                             <th>Observación</th>
                         </tr>
                     </thead>
@@ -157,11 +152,16 @@
                             <td th:text="${movimiento.cantidad}">0</td>
                             <td th:text="${movimiento.ubicacion.codigoEstante}">A-01</td>
                             <td th:text="${movimiento.usuario.nombre}">Usuario</td>
+                            <td>
+                                <span class="badge success" th:text="${movimiento.tipoMovimiento}">
+                                    Ingreso
+                                </span>
+                            </td>
                             <td th:text="${movimiento.observacion}">Observación</td>
                         </tr>
 
                         <tr th:if="${#lists.isEmpty(movimientos)}">
-                            <td colspan="6" class="empty">
+                            <td colspan="7" class="empty">
                                 No hay recepciones registradas.
                             </td>
                         </tr>

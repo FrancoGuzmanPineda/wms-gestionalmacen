@@ -22,8 +22,8 @@ public class Movimiento {
     private String tipoMovimiento;
 
     @ManyToOne
-    @JoinColumn(name = "id_tipo", nullable = false)
-    private Tipo tipo;
+    @JoinColumn(name = "id_tipo_movimiento", nullable = false)
+    private TipoMovimiento tipoMovimientoRef;
 
     @ManyToOne
     @JoinColumn(name = "id_producto", nullable = false)
@@ -81,12 +81,12 @@ public class Movimiento {
         this.tipoMovimiento = tipoMovimiento;
     }
 
-    public Tipo getTipo() {
-        return tipo;
+    public TipoMovimiento getTipoMovimientoRef() {
+        return tipoMovimientoRef;
     }
 
-    public void setTipo(Tipo tipo) {
-        this.tipo = tipo;
+    public void setTipoMovimientoRef(TipoMovimiento tipoMovimientoRef) {
+        this.tipoMovimientoRef = tipoMovimientoRef;
     }
 
     public Producto getProducto() {
