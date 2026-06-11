@@ -1,4 +1,5 @@
 package com.wms.gestionalmaceng01.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,12 +22,36 @@ public class SecurityConfig {
     public SecurityConfig(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // Uso de la constante en lugar del texto duplicado
-                .requestMatchers(LOGIN_URL, "/recuperarclave", "/css/**", "/js/**", "/api/**").permitAll()
+              
+.requestMatchers(
+    LOGIN_URL,
+    "/recuperarclave",
+    "/css/**",
+    "/js/**",
+    "/api/**",
+    "/error",
+
+    "/inventario",
+    "/inventario/**",
+
+    "/recepcion",
+    "/recepcion/**",
+
+    "/productos",
+    "/productos/**",
+
+    "/categorias",
+    "/categorias/**",
+
+    "/ubicaciones",
+    "/ubicaciones/**"
+).permitAll()
+
                 .anyRequest().authenticated()
             )
             .userDetailsService(userDetailsService)
@@ -43,7 +68,6 @@ public class SecurityConfig {
                 .logoutSuccessUrl(LOGIN_URL + "?logout=true")
                 .permitAll()
             )
-            // Se actualizó a formato lambda para evitar advertencias de obsolescencia (Deprecated)
             .csrf(csrf -> csrf.disable());
 
         return http.build();
@@ -57,5 +81,5 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
-    }  
+    }
 }

@@ -1,57 +1,173 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin -Gestionalmacén</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <title>Dashboard - WMS</title>
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 sidebar p-3">
-                <h4 class="text-white mb-4">🏭 Admin</h4>
-                <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link" href="#">📊 Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">👥 Usuarios</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">📦 Inventario</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">🏷️ Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">📈 Reportes</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">⚙️ Configuración</a></li>
-                </ul>
-                <hr class="bg-secondary">
-                <a href="/logout" class="btn btn-danger w-100">🚪 Cerrar Sesión</a>
-            </div>
-            
-            <!-- Main Content -->
-            <div class="col-md-10 content">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Panel de Administrador</h2>
-                    <div class="bg-white p-2 rounded shadow-sm">
-                        <span>👑 <strong th:text="${email}"></strong></span>
-                    </div>
-                </div>
-                
-                <div class="row mb-4">
-                    <div class="col-md-3"><div class="card card-stats p-3"><h5>Usuarios</h5><h2>15</h2></div></div>
-                    <div class="col-md-3"><div class="card card-stats p-3"><h5>Productos</h5><h2>1,234</h2></div></div>
-                    <div class="col-md-3"><div class="card card-stats p-3"><h5>Órdenes</h5><h2>42</h2></div></div>
-                    <div class="col-md-3"><div class="card card-stats p-3"><h5>Stock Bajo</h5><h2>8</h2></div></div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">📋 Acciones Rápidas</div>
-                    <div class="card-body">
-                        <button class="btn btn-primary m-1">➕ Crear Usuario</button>
-                        <button class="btn btn-success m-1">📦 Agregar Producto</button>
-                        <button class="btn btn-warning m-1">📊 Generar Reporte</button>
-                    </div>
-                </div>
-            </div>
+
+<div class="layout">
+
+    <!-- MENÚ LATERAL -->
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>WMS</h2>
+            <p>Sistema de Gestión de Almacenes</p>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+        <nav>
+            <a th:href="@{/dashboard}" class="active">Dashboard</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/recepcion}">Recepciones</a>
+            <a th:href="@{/productos}">Productos</a>
+            <a th:href="@{/categorias}">Categorías</a>
+            <a th:href="@{/ubicaciones}">Ubicaciones</a>
+            <a href="#">Reportes</a>
+            <a href="#">Usuarios</a>
+            <a th:href="@{/logout}">Cerrar sesión</a>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main">
+
+        <header class="topbar">
+            <h3>Dashboard Principal</h3>
+
+            <span>
+                <strong th:text="${nombre}">Administrador</strong>
+                |
+                <small th:text="${rol}">ADMIN</small>
+            </span>
+        </header>
+
+        <section class="content">
+
+            <div class="page-header">
+                <div>
+                    <h1>Panel de Control</h1>
+                    <p>Resumen general del módulo de recepción, inventario y productos</p>
+                </div>
+
+                <div class="buttons">
+                    <a th:href="@{/recepcion}" class="btn primary">Registrar Recepción</a>
+                    <a th:href="@{/productos/nuevo}" class="btn secondary">Nuevo Producto</a>
+                </div>
+            </div>
+
+            <!-- TARJETAS RESUMEN -->
+            <div class="dashboard-cards">
+
+                <div class="summary-card">
+                    <h3>Inventario</h3>
+                    <p>📦</p>
+                    <span>Consulta de stock actual y productos activos.</span>
+                </div>
+
+                <div class="summary-card">
+                    <h3>Recepción</h3>
+                    <p>📥</p>
+                    <span>Registro de ingreso de mercancía al almacén.</span>
+                </div>
+
+                <div class="summary-card">
+                    <h3>Productos</h3>
+                    <p>🏷️</p>
+                    <span>Gestión y mantenimiento de productos.</span>
+                </div>
+
+            </div>
+
+            <!-- ACCESOS RÁPIDOS -->
+            <div class="card">
+                <h2>Accesos rápidos</h2>
+
+                <div class="quick-actions">
+
+                    <a th:href="@{/inventario}" class="quick-card">
+                        <h3>Inventario</h3>
+                        <p>Consultar productos, stock actual, stock mínimo y estado de existencias.</p>
+                    </a>
+
+                    <a th:href="@{/recepcion}" class="quick-card">
+                        <h3>Recepción</h3>
+                        <p>Registrar ingresos de mercancía y actualizar stock automáticamente.</p>
+                    </a>
+
+                    <a th:href="@{/productos}" class="quick-card">
+                        <h3>Productos</h3>
+                        <p>Crear, editar y administrar productos del almacén.</p>
+                    </a>
+
+                    <a th:href="@{/productos/nuevo}" class="quick-card">
+                        <h3>Nuevo Producto</h3>
+                        <p>Registrar un nuevo producto con categoría, tipo, costo, precio y stock.</p>
+                    </a>
+
+                    <a th:href="@{/categorias}" class="quick-card">
+                        <h3>Categorías</h3>
+                        <p>Mantenimiento de categorías de productos.</p>
+                    </a>
+
+                    <a th:href="@{/ubicaciones}" class="quick-card">
+                        <h3>Ubicaciones</h3>
+                        <p>Gestión de estantes, pasillos y zonas del almacén.</p>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- FLUJO IMPLEMENTADO -->
+            <div class="card">
+                <h2>Flujo implementado</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Paso</th>
+                            <th>Módulo</th>
+                            <th>Descripción</th>
+                            <th>Ruta</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Productos</td>
+                            <td>Registro y mantenimiento de productos del almacén.</td>
+                            <td>
+                                <a th:href="@{/productos}">/productos</a>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>2</td>
+                            <td>Recepción</td>
+                            <td>Ingreso de mercancía, selección de producto, ubicación y cantidad.</td>
+                            <td>
+                                <a th:href="@{/recepcion}">/recepcion</a>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>3</td>
+                            <td>Inventario</td>
+                            <td>Actualización automática de stock y consulta de existencias.</td>
+                            <td>
+                                <a th:href="@{/inventario}">/inventario</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
 </body>
 </html>

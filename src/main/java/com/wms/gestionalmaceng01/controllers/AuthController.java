@@ -24,8 +24,9 @@ import com.wms.gestionalmaceng01.repository.UsuarioRepository;
 public class AuthController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
-    
-    // ✅ Constantes para cumplir con la regla SonarQube java:S1192
+
+    private static final String DASHBOARD_ADMIN = "dashboardadmin";
+    private static final String DASHBOARD_EMPLEADO = "dashboardempleado";
     private static final String DASHBOARD_USER = "dashboardusuario";
     private static final String ERROR_KEY = "error";
 
@@ -44,26 +45,39 @@ public class AuthController {
 
     @GetMapping("/dashboard")
     public String dashboard(Authentication auth, Model model) {
+
+        if (auth == null || auth.getName() == null) {
+            return "redirect:/login";
+        }
+
         String correo = auth.getName();
+
         model.addAttribute("correo", correo);
-        
+
         Optional<Usuario> usuarioOpt = userRepository.findByCorreo(correo);
-        
+
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
             String rol = usuario.getRol();
+
+            model.addAttribute("nombre", usuario.getNombre());
             model.addAttribute("rol", rol);
-            
-            log.info("Usuario: {} - Rol: {}", correo, rol);
-            
-            // ✅ Flujo limpio sin código redundante ni nulos
+
+            log.info("Usuario autenticado: {} - Rol: {}", correo, rol);
+
             if ("ADMIN".equals(rol)) {
-                return "dashboardadmin";
-            } else if ("EMPLOYEE".equals(rol)) {
-                return "dashboardempleado";
+                return DASHBOARD_ADMIN;
+            }
+
+            if ("EMPLOYEE".equals(rol)) {
+                return DASHBOARD_EMPLEADO;
+            }
+
+            if ("USER".equals(rol)) {
+                return DASHBOARD_USER;
             }
         }
-        
+
         return DASHBOARD_USER;
     }
 
@@ -71,18 +85,21 @@ public class AuthController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> verificarUsuario(@RequestParam String email) {
         Map<String, Object> respuesta = new HashMap<>();
-        var userOpt = userRepository.findByCorreo(email);
+
+        Optional<Usuario> userOpt = userRepository.findByCorreo(email);
 
         if (userOpt.isEmpty()) {
             respuesta.put("existe", false);
         } else {
             Usuario user = userOpt.get();
+
             respuesta.put("existe", true);
             respuesta.put("rol", user.getRol());
             respuesta.put("bloqueado", user.estaBloqueado());
             respuesta.put("segundosBloqueo", user.getSegundosBloqueo());
             respuesta.put("intentosRestantes", Math.max(0, 3 - user.getIntentosFallidos()));
         }
+
         return ResponseEntity.ok(respuesta);
     }
 
@@ -90,17 +107,20 @@ public class AuthController {
     @ResponseBody
     public ResponseEntity<Map<String, String>> cambiarPassword(@RequestBody Map<String, String> datos) {
         Map<String, String> respuesta = new HashMap<>();
+
         String email = datos.get("email");
         String actual = datos.get("actual");
         String nueva = datos.get("nueva");
 
-        var userOpt = userRepository.findByCorreo(email);
+        Optional<Usuario> userOpt = userRepository.findByCorreo(email);
+
         if (userOpt.isEmpty()) {
             respuesta.put(ERROR_KEY, "Usuario no encontrado");
             return ResponseEntity.badRequest().body(respuesta);
         }
 
         Usuario user = userOpt.get();
+
         if (!passwordEncoder.matches(actual, user.getClave())) {
             respuesta.put(ERROR_KEY, "Contraseña actual incorrecta");
             return ResponseEntity.badRequest().body(respuesta);
@@ -108,9 +128,10 @@ public class AuthController {
 
         user.setClave(passwordEncoder.encode(nueva));
         user.reiniciarIntentos();
+
         userRepository.save(user);
 
-        respuesta.put("mensaje", "Contraseña actualizada");
+        respuesta.put("mensaje", "Contraseña actualizada correctamente");
         return ResponseEntity.ok(respuesta);
     }
 
@@ -118,10 +139,29 @@ public class AuthController {
     @ResponseBody
     public ResponseEntity<Map<String, String>> crearUsuario(@RequestBody Map<String, String> datos) {
         Map<String, String> respuesta = new HashMap<>();
+
+        String nombre = datos.get("nombre");
         String correo = datos.get("correo");
+        String clave = datos.get("clave");
+        String rol = datos.get("rol");
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            respuesta.put(ERROR_KEY, "El campo nombre es obligatorio");
+            return ResponseEntity.badRequest().body(respuesta);
+        }
 
         if (correo == null || correo.trim().isEmpty()) {
             respuesta.put(ERROR_KEY, "El campo correo es obligatorio");
+            return ResponseEntity.badRequest().body(respuesta);
+        }
+
+        if (clave == null || clave.trim().isEmpty()) {
+            respuesta.put(ERROR_KEY, "El campo contraseña es obligatorio");
+            return ResponseEntity.badRequest().body(respuesta);
+        }
+
+        if (rol == null || rol.trim().isEmpty()) {
+            respuesta.put(ERROR_KEY, "El campo rol es obligatorio");
             return ResponseEntity.badRequest().body(respuesta);
         }
 
@@ -131,12 +171,15 @@ public class AuthController {
         }
 
         Usuario nuevo = new Usuario();
-        nuevo.setNombre(datos.get("nombre"));
+        nuevo.setNombre(nombre);
         nuevo.setCorreo(correo);
-        nuevo.setClave(passwordEncoder.encode(datos.get("clave")));
-        nuevo.setRol(datos.get("rol"));
+        nuevo.setClave(passwordEncoder.encode(clave));
+        nuevo.setRol(rol);
+        nuevo.setActivo(true);
+        nuevo.reiniciarIntentos();
 
         userRepository.save(nuevo);
+
         respuesta.put("mensaje", "Usuario creado exitosamente");
         return ResponseEntity.ok(respuesta);
     }
