@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios - WMS</title>
+    <link rel="stylesheet" th:href="@{/css/listarusuarios.css}">
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>WMS</h2>
+            <p>Sistema de Gestión de Usuarios</p>
+        </div>
+
+        <nav>
+            <a th:href="@{/dashboard}">Dashboar</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/recepcion}">Recepciones</a>
+            <a th:href="@{/productos}" class="active">Productos</a>
+            <a th:href="@{/categorias}">Categorías</a>
+            <a th:href="@{/ubicaciones}">Ubicaciones</a>
+            <a href="#">Reportes</a>
+            <a href="#">Usuarios</a>
+            <a th:href="@{/logout}">Cerrar sesión</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <h3>Gestión de Usuarios</h3>
+
+            <span>
+                <strong th:text="${nombre}">Usuario</strong>
+                |
+                <small th:text="${rol}">ROL</small>
+            </span>
+        </header>
+
+        <section class="content">
+
+            <div class="page-header">
+                <div>
+                    <h1>Usuarios</h1>
+                    <p>Registro y mantenimiento de usuarios en el sistema</p>
+                </div>
+
+                <div class="buttons">
+                    <a th:href="@{/dashboard}" class="btn secondary">Volver al Dashboard</a>
+                    <a th:href="@{/inventario}" class="btn secondary">Volver a Registros</a>
+                    <a th:href="@{/usuarios/nuevo}" class="btn primary">Nuevo Usuario</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Clave</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Bloqueos</th>
+                        <th>Intentos</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="usuarios : ${usuarios}">
+                        <td th:text="${usuarios.codigo}">USR-001</td>
+                        <td th:text="${usuarios.nombre}">Usuario</td>
+                        <td th:text="${usuarios.correo}">Correo</td>
+                        <td th:text="${usuarios.clave}">Clave</td>
+                        <td th:text="${usuarios.rol}">ROL</td>
+                        <td th:text="${usuarios.estado}">Estado</td>
+                        <td th:text="${usuarios.bloqueos}">0</td>
+                        <td th:text="${usuarios.intentos}">0</td>
+                        <td>
+                            <span class="badge success" th:text="${usuarios.estado}">Activo</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/usuarios/editar/{id}(id=${usuarios.idUsuario})}" class="btn secondary">Editar</a>
+                            <a th:href="@{/usuarios/eliminar/{id}(id=${usuarios.idUsuario})}" class="btn danger">Eliminar</a>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(usuarios)}">
+                        <td colspan="11" class="empty">No hay usuarios registrados.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>
