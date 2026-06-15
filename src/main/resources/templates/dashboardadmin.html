@@ -16,17 +16,18 @@
             <p>Sistema de Gestión de Almacenes</p>
         </div>
 
-        <nav>
-            <a th:href="@{/dashboard}" class="active">Dashboard</a>
-            <a th:href="@{/inventario}">Inventario</a>
-            <a th:href="@{/recepcion}">Recepciones</a>
-            <a th:href="@{/productos}">Productos</a>
-            <a th:href="@{/categorias}">Categorías</a>
-            <a th:href="@{/ubicaciones}">Ubicaciones</a>
-            <a href="#">Reportes</a>
-            <a href="#">Usuarios</a>
-            <a th:href="@{/logout}">Cerrar sesión</a>
-        </nav>
+      <nav>
+    <a th:href="@{/dashboard}" class="active">Dashboard</a>
+    <a th:href="@{/inventario}">Inventario</a>
+    <a th:href="@{/recepcion}">Recepciones</a>
+    <a th:href="@{/despacho}">Despachos</a>
+    <a th:href="@{/productos}">Productos</a>
+    <a th:href="@{/categorias}">Categorías</a>
+    <a th:href="@{/ubicaciones}">Ubicaciones</a>
+    <a href="#">Reportes</a>
+    <a href="#">Usuarios</a>
+    <a th:href="@{/logout}">Cerrar sesión</a>
+</nav>
     </aside>
 
     <!-- CONTENIDO PRINCIPAL -->
@@ -76,7 +77,11 @@
                     <p>🏷️</p>
                     <span>Gestión y mantenimiento de productos.</span>
                 </div>
-
+                <div class="summary-card">
+                <h3>Despachos</h3>
+                <p>🚚</p>
+                <span>Registro de salidas de mercancía y control de despachos.</span>
+            </div>  
             </div>
 
             <!-- ACCESOS RÁPIDOS -->
@@ -133,33 +138,44 @@
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Productos</td>
-                            <td>Registro y mantenimiento de productos del almacén.</td>
-                            <td>
-                                <a th:href="@{/productos}">/productos</a>
-                            </td>
-                        </tr>
 
-                        <tr>
-                            <td>2</td>
-                            <td>Recepción</td>
-                            <td>Ingreso de mercancía, selección de producto, ubicación y cantidad.</td>
-                            <td>
-                                <a th:href="@{/recepcion}">/recepcion</a>
-                            </td>
-                        </tr>
+<tr>
+    <td>1</td>
+    <td>Productos</td>
+    <td>Registro y mantenimiento de productos del almacén.</td>
+    <td>
+        <a th:href="@{/productos}">/productos</a>
+    </td>
+</tr>
 
-                        <tr>
-                            <td>3</td>
-                            <td>Inventario</td>
-                            <td>Actualización automática de stock y consulta de existencias.</td>
-                            <td>
-                                <a th:href="@{/inventario}">/inventario</a>
-                            </td>
-                        </tr>
-                    </tbody>
+<tr>
+    <td>2</td>
+    <td>Recepción</td>
+    <td>Ingreso de mercancía, selección de producto, ubicación y cantidad.</td>
+    <td>
+        <a th:href="@{/recepcion}">/recepcion</a>
+    </td>
+</tr>
+
+<tr>
+    <td>3</td>
+    <td>Inventario</td>
+    <td>Actualización automática de stock y consulta de existencias.</td>
+    <td>
+        <a th:href="@{/inventario}">/inventario</a>
+    </td>
+</tr>
+
+<tr>
+    <td>4</td>
+    <td>Despacho</td>
+    <td>Salida de productos hacia clientes y reducción automática del stock.</td>
+    <td>
+        <a th:href="@{/despacho}">/despacho</a>
+    </td>
+</tr>
+
+</tbody>
                 </table>
             </div>
 

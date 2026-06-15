@@ -39,8 +39,11 @@ public class SecurityConfig {
     "/inventario",
     "/inventario/**",
 
-    "/recepcion",
+   "/recepcion",
     "/recepcion/**",
+
+    "/despacho",
+    "/despacho/**",
 
     "/productos",
     "/productos/**",
