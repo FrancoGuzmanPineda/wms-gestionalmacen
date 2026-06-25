@@ -1,0 +1,120 @@
+/* Contenedor del formulario */
+.form-group {
+    margin-bottom: 16px;
+}
+
+/* Etiquetas */
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+/* Campos de entrada */
+.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #dfe6e9;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    background: #f8f9fa;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.form-control:focus {
+    border-color: #4a6cf7;
+    outline: none;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(74, 108, 247, 0.1);
+}
+
+/* ===== FILA DE 2 COLUMNAS ===== */
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.form-row .half {
+    flex: 1;
+}
+
+/* ===== CHECKBOX ===== */
+.checkbox-group {
+    margin-bottom: 16px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #4a6cf7;
+    cursor: pointer;
+    order: 2;
+}
+
+.checkbox-group label span {
+    order: 1;
+}
+
+/* ===== BOTONES ===== */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 2px solid #f1f2f6;
+}
+
+.form-actions .btn {
+    padding: 10px 28px;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-row .form-group {
+        margin-bottom: 16px;
+    }
+    
+    .form-row .form-group:last-child {
+        margin-bottom: 0;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .formulario-usuario {
+        padding: 10px 20px;
+    }
+}

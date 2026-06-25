@@ -20,6 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
         Usuario usuario = usuarioRepository.findByCorreo(email)
             .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con el correo: " + email));
 
@@ -31,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             .password(usuario.getClave())
             .roles(usuario.getRol()) // Agrega el prefijo ROLE_ automáticamente para la sesión
             .accountLocked(cuentaBloqueada) // 🚨 Solución nativa: Spring Boot manejará el bloqueo de forma correcta
-            .disabled(!usuario.isActivo()) // Deshabilita la sesión si el estado en BD no es activo
+            .disabled(!usuario.isEstado()) // Deshabilita la sesión si el estado en BD no es activo
             .build();
     }
 }

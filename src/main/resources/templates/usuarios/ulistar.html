@@ -3,63 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>Usuarios - WMS</title>
-    <link rel="stylesheet" th:href="@{/css/listarusuarios.css}">
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
 </head>
 <body>
-
-<div class="layout">
-
-    <aside class="sidebar">
+    <div class="layout">
+        <aside class="sidebar">
         <div class="logo">
             <h2>WMS</h2>
-            <p>Sistema de Gestión de Usuarios</p>
+            <p>Sistema de Gestión de Almacenes</p>
         </div>
 
         <nav>
             <a th:href="@{/dashboard}">Dashboard</a>
             <a th:href="@{/inventario}">Inventario</a>
             <a th:href="@{/recepcion}">Recepciones</a>
-            <a th:href="@{/productos}" class="active">Productos</a>
+            <a th:href="@{/productos}">Productos</a>
             <a th:href="@{/categorias}">Categorías</a>
             <a th:href="@{/ubicaciones}">Ubicaciones</a>
-            <a href="#">Reportes</a>
-            <a href="#">Usuarios</a>
+            <a th:href="@{/reportes}">Reportes</a>
+            <a th:href="@{/usuarios}" class="active">Usuarios</a>
             <a th:href="@{/logout}">Cerrar sesión</a>
         </nav>
     </aside>
-
     <main class="main">
-
+    
         <header class="topbar">
             <h3>Gestión de Usuarios</h3>
-
+    
             <span>
                 <strong th:text="${nombre}">Usuario</strong>
                 |
                 <small th:text="${rol}">ROL</small>
             </span>
         </header>
-
+    
         <section class="content">
-
+    
             <div class="page-header">
                 <div>
                     <h1>Usuarios</h1>
-                    <p>Registro y mantenimiento de usuarios en el sistema</p>
+                    <p>Registro y mantenimiento de usuarios del sistema</p>
                 </div>
-
+    
                 <div class="buttons">
                     <a th:href="@{/dashboard}" class="btn secondary">Volver al Dashboard</a>
-                    <a th:href="@{/inventario}" class="btn secondary">Volver a Registros</a>
-                    <a th:href="@{/usuarios/nuevo}" class="btn primary">Nuevo Usuario</a>
+                    <a th:href="@{/usuarios/uformulario}" class="btn primary">Nuevo Usuario</a>
                 </div>
             </div>
-
-            <div class="card">
-                <table>
-                    <thead>
+            <table>
+                <thead>
                     <tr>
-                        <th>Código</th>
+                        <th>ID</th>
                         <th>Nombre</th>
                         <th>Correo</th>
                         <th>Clave</th>
@@ -69,39 +63,40 @@
                         <th>Intentos</th>
                         <th>Acciones</th>
                     </tr>
-                    </thead>
-
-                    <tbody>
-                    <tr th:each="usuarios : ${usuarios}">
-                        <td th:text="${usuarios.codigo}">USR-001</td>
-                        <td th:text="${usuarios.nombre}">Usuario</td>
-                        <td th:text="${usuarios.correo}">Correo</td>
-                        <td th:text="${usuarios.clave}">Clave</td>
-                        <td th:text="${usuarios.rol}">ROL</td>
-                        <td th:text="${usuarios.estado}">Estado</td>
-                        <td th:text="${usuarios.bloqueos}">0</td>
-                        <td th:text="${usuarios.intentos}">0</td>
+                </thead>
+                <tbody>
+                    <tr th:each="usuario : ${usuarios}">
+                        <td th:text="${usuario.idusuario}">1</td>
+                        <td th:text="${usuario.nombre}">Nombre</td>
+                        <td th:text="${usuario.correo}">correo@test.com</td>
                         <td>
-                            <span class="badge success" th:text="${usuarios.estado}">Activo</span>
+                            <span class="clave-oculta">
+                                <span th:text="${#strings.length(usuario.clave) > 0 ? '••••••••' : 'Sin clave'}">••••••••</span>
+                            </span>
                         </td>
                         <td>
-                            <a th:href="@{/usuarios/editar/{id}(id=${usuarios.idUsuario})}" class="btn secondary">Editar</a>
-                            <a th:href="@{/usuarios/eliminar/{id}(id=${usuarios.idUsuario})}" class="btn danger">Eliminar</a>
+                            <span class="badge admin" th:text="${usuario.rol}">ADMIN</span>
+                        </td>
+                        <td>
+                            <span class="badge success" th:text="${usuario.estado} ? 'Activo' : 'Inactivo'">Activo</span>
+                        </td>
+                        <td th:text="${usuario.intentosFallidos}">0</td>
+                        <td>
+                            <span th:if="${usuario.estaBloqueado()}" class="badge danger">Bloqueado</span>
+                            <span th:unless="${usuario.estaBloqueado()}" class="badge success">Sin bloqueo</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/usuarios/editar/{id}(id=${usuario.idusuario})}" class="btn secondary">Editar</a>
+                            <a th:href="@{/usuarios/eliminar/{id}(id=${usuario.idusuario})}" class="btn danger">Eliminar</a>
                         </td>
                     </tr>
-
                     <tr th:if="${#lists.isEmpty(usuarios)}">
-                        <td colspan="11" class="empty">No hay usuarios registrados.</td>
+                        <td colspan="8" class="empty">No hay usuarios registrados.</td>
                     </tr>
-                    </tbody>
-                </table>
-            </div>
-
+                </tbody>
+            </table>
         </section>
-
     </main>
-
-</div>
-
+    </div>
 </body>
 </html>
