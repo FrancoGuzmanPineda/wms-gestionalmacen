@@ -2,14 +2,14 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WMS - Iniciar Sesión</title>
-    <!-- Google Fonts para tipografía moderna -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <!-- Font Awesome 6 para iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- Bootstrap 5 CSS (para el modal) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" 
+          crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 <body>
@@ -26,10 +26,10 @@
         </div>
 
         <!-- FORMULARIO: con soporte para Thymeleaf y Spring Security -->
-        <form id="loginForm" method="post" th:action="@{/procesar-login}" action="#">
+        <form id="loginForm" method="post" th:action="@{/login}" action="#">
             <!-- Campo USUARIO -->
             <div class="input-group">
-                <label><i class="fas fa-user-circle"></i> Usuario</label>
+                <label for="username"><i class="fas fa-user-circle"></i> Usuario</label>
                 <div class="input-icon-wrapper">
                     <i class="fas fa-user input-icon"></i>
                     <input type="text" id="username" name="username" placeholder="Ingrese su usuario" autocomplete="username" required>
@@ -38,7 +38,7 @@
 
             <!-- Campo CONTRASEÑA -->
             <div class="input-group">
-                <label><i class="fas fa-lock"></i> Contraseña</label>
+                <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
                 <div class="input-icon-wrapper">
                     <i class="fas fa-key input-icon"></i>
                     <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" autocomplete="current-password" required>
@@ -84,7 +84,7 @@
                 <p>¿Olvidaste tu contraseña? No te preocupes. Ingresa tu correo electrónico o usuario y te enviaremos un enlace para restablecerla.</p>
                 
                 <div class="input-group-modal">
-                    <label><i class="fas fa-envelope me-1"></i> Correo electrónico o usuario</label>
+                    <label for="recoveryEmail"><i class="fas fa-envelope me-1"></i> Correo electrónico o usuario</label>
                     <div class="input-icon-wrapper-modal">
                         <i class="fas fa-user-circle"></i>
                         <input type="text" id="recoveryEmail" class="form-control" placeholder="Ej: usuario@wms.com / nombre_usuario" autocomplete="off">
@@ -112,7 +112,8 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" 
+            crossorigin="anonymous"></script>
 <script th:src="@{/js/login.js}" defer></script>
 </body>
 </html>

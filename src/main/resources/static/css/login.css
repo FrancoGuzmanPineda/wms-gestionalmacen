@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 * {
             margin: 0;
             padding: 0;
@@ -5,7 +6,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background: whitesmoke;
             min-height: 100vh;
             display: flex;
@@ -104,7 +105,7 @@
             border: 1.5px solid #e2e8f0;
             border-radius: 18px;
             font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-weight: 500;
             background-color: #fefefe;
             transition: all 0.2s;
@@ -171,7 +172,7 @@
             border-radius: 12px;
             font-weight: 700;
             font-size: 1rem;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
             color: white;
             cursor: pointer;
             transition: all 0.25s;

@@ -4,7 +4,6 @@ import com.wms.gestionalmaceng01.models.Usuario;
 import com.wms.gestionalmaceng01.repository.UsuarioRepository;
 import com.wms.gestionalmaceng01.services.ProductoService;
 import com.wms.gestionalmaceng01.services.UbicacionService;
-import com.wms.gestionalmaceng01.services.TipoService;
 import com.wms.gestionalmaceng01.services.RecepcionService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -19,20 +18,17 @@ public class RecepcionController {
 
     private final ProductoService productoService;
     private final UbicacionService ubicacionService;
-    private final TipoService tipoService;
     private final RecepcionService recepcionService;
     private final UsuarioRepository usuarioRepository;
 
     public RecepcionController(
             ProductoService productoService,
             UbicacionService ubicacionService,
-            TipoService tipoService,
             RecepcionService recepcionService,
             UsuarioRepository usuarioRepository
     ) {
         this.productoService = productoService;
         this.ubicacionService = ubicacionService;
-        this.tipoService = tipoService;
         this.recepcionService = recepcionService;
         this.usuarioRepository = usuarioRepository;
     }
@@ -43,7 +39,6 @@ public class RecepcionController {
 
         model.addAttribute("productos", productoService.listarActivos());
         model.addAttribute("ubicaciones", ubicacionService.listarActivos());
-        model.addAttribute("tipos", tipoService.listarActivos());
         model.addAttribute("usuarios", usuarioRepository.findAll());
         model.addAttribute("movimientos", recepcionService.listarMovimientosIngreso());
 
@@ -54,7 +49,6 @@ public class RecepcionController {
     public String registrarRecepcion(
             @RequestParam("idProducto") Integer idProducto,
             @RequestParam("idUbicacion") Integer idUbicacion,
-            @RequestParam("idTipo") Integer idTipo,
             @RequestParam("idUsuario") Long idUsuario,
             @RequestParam("cantidad") Integer cantidad,
             @RequestParam(value = "observacion", required = false) String observacion
@@ -62,7 +56,6 @@ public class RecepcionController {
         recepcionService.registrarRecepcion(
                 idProducto,
                 idUbicacion,
-                idTipo,
                 idUsuario,
                 cantidad,
                 observacion

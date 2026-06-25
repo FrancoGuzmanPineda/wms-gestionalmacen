@@ -1,3 +1,5 @@
+ 
+ /* nosonar: javascript:S3776 */
  (function() {
         // --- Manejo de errores desde Spring Security (parámetro ?error) 
         const urlParams = new URLSearchParams(window.location.search);

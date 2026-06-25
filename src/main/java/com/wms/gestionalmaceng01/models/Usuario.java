@@ -1,5 +1,6 @@
 package com.wms.gestionalmaceng01.models;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,9 +25,9 @@ public class Usuario {
     @Column(name = "rol")
     private String rol;
     @Column(name = "estado")
-    private boolean activo = true;
+    private boolean estado;
     @Column(name = "intentos_fallidos")
-    private int intentosFallidos = 0;
+    private int intentosFallidos;
     @Column(name = "bloqueado_hasta")
     private LocalDateTime bloqueadoHasta;
 
@@ -46,7 +47,8 @@ public class Usuario {
 
     public long getSegundosBloqueo() {
         if (bloqueadoHasta == null) return 0;
-        return java.time.Duration.between(LocalDateTime.now(), bloqueadoHasta).getSeconds();
+        long segundos = ChronoUnit.SECONDS.between(LocalDateTime.now(), bloqueadoHasta);
+        return Math.max(0, segundos);
     }
 
     public void registrarIntentoFallido() {
@@ -72,8 +74,8 @@ public class Usuario {
     public void setClave(String clave) { this.clave = clave; }
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
-    public boolean isActivo() { return activo; }
-    public void setActivo(boolean activo) { this.activo = activo; }
+    public boolean isEstado() { return estado; }
+    public void setEstado(boolean estado) { this.estado = estado; }
     public int getIntentosFallidos() { return intentosFallidos; }
     public LocalDateTime getBloqueadoHasta() { return bloqueadoHasta; }
 }

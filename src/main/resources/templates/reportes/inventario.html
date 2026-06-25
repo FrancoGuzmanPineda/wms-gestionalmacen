@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte General de Inventario - WMS</title>
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
+</head>
+<body>
+
+<div class="layout">
+
+```
+<aside class="sidebar">
+    <div class="logo">
+        <h2>WMS</h2>
+        <p>Sistema de Gestión de Almacenes</p>
+    </div>
+
+    <nav>
+        <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/recepcion}">Recepciones</a>
+            <a th:href="@{/productos}">Productos</a>
+            <a th:href="@{/categorias}">Categorías</a>
+            <a th:href="@{/ubicaciones}">Ubicaciones</a>
+            <a th:href="@{/reportes}" class="active">Reportes</a>
+            <a href="#">Usuarios</a>
+            <a th:href="@{/logout}">Cerrar sesión</a>
+    </nav>
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <h3>Reporte General de Inventario</h3>
+    </header>
+
+    <section class="content">
+
+        <div class="page-header">
+            <h1>Inventario General</h1>
+        </div>
+
+        <div class="card">
+
+            <form method="get" th:action="@{/reportes/inventario}">
+                <div class="filters">
+
+                    <input type="text"
+                           name="buscar"
+                           placeholder="Buscar por código o nombre"
+                           th:value="${buscar}">
+
+                    <button type="submit">
+                        Buscar
+                    </button>
+
+                </div>
+            </form>
+
+            <table>
+
+                <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Tipo</th>
+                    <th>Stock</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="producto : ${productos}">
+                    <td th:text="${producto.codigo}"></td>
+                    <td th:text="${producto.nombre}"></td>
+                    <td th:text="${producto.categoria.nombreCategoria}"></td>
+                    <td th:text="${producto.tipo.nombreTipo}"></td>
+                    <td th:text="${producto.stockActual}"></td>
+                    <td th:text="${producto.estado}"></td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(productos)}">
+                    <td colspan="6" class="empty">
+                        No existen productos.
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+```
+
+</div>
+
+</body>
+</html>

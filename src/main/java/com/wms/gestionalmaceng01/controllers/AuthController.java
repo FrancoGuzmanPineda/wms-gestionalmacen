@@ -26,9 +26,7 @@ public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     private static final String DASHBOARD_ADMIN = "dashboardadmin";
-    private static final String DASHBOARD_EMPLEADO = "dashboardempleado";
-    private static final String DASHBOARD_USER = "dashboardusuario";
-    private static final String ERROR_KEY = "error";
+     private static final String ERROR_KEY = "error";
 
     private final UsuarioRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -43,6 +41,12 @@ public class AuthController {
         return "login";
     }
 
+    @PostMapping("/login")
+    public String processLogin() {
+    // Spring Security maneja la autenticación automáticamente
+        return "redirect:/dashboard";
+    }
+
     @GetMapping("/dashboard")
     public String dashboard(Authentication auth, Model model) {
 
@@ -51,34 +55,20 @@ public class AuthController {
         }
 
         String correo = auth.getName();
-
         model.addAttribute("correo", correo);
 
         Optional<Usuario> usuarioOpt = userRepository.findByCorreo(correo);
 
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            String rol = usuario.getRol();
-
             model.addAttribute("nombre", usuario.getNombre());
-            model.addAttribute("rol", rol);
+            model.addAttribute("rol", usuario.getRol());
 
-            log.info("Usuario autenticado: {} - Rol: {}", correo, rol);
-
-            if ("ADMIN".equals(rol)) {
-                return DASHBOARD_ADMIN;
-            }
-
-            if ("EMPLOYEE".equals(rol)) {
-                return DASHBOARD_EMPLEADO;
-            }
-
-            if ("USER".equals(rol)) {
-                return DASHBOARD_USER;
-            }
+            log.info("Usuario autenticado: {} - Rol: {}", correo, usuario.getRol());
+            return DASHBOARD_ADMIN;
         }
 
-        return DASHBOARD_USER;
+        return "redirect:/login";
     }
 
     @GetMapping("/api/verificar-usuario")
@@ -138,6 +128,7 @@ public class AuthController {
     @PostMapping("/api/crear-usuario")
     @ResponseBody
     public ResponseEntity<Map<String, String>> crearUsuario(@RequestBody Map<String, String> datos) {
+        
         Map<String, String> respuesta = new HashMap<>();
 
         String nombre = datos.get("nombre");
@@ -175,7 +166,7 @@ public class AuthController {
         nuevo.setCorreo(correo);
         nuevo.setClave(passwordEncoder.encode(clave));
         nuevo.setRol(rol);
-        nuevo.setActivo(true);
+        nuevo.setEstado(true);
         nuevo.reiniciarIntentos();
 
         userRepository.save(nuevo);
