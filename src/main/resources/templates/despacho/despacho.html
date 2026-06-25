@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Despachos - WMS</title>
+
+    <link rel="stylesheet" th:href="@{/css/despacho.css}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>WMS</h2>
+            <p>Sistema de Gestión de Almacenes</p>
+        </div>
+
+        <nav>
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/recepcion}">Recepciones</a>
+            <a th:href="@{/despacho}" class="active">Despachos</a>
+            <a th:href="@{/productos}">Productos</a>
+            <a th:href="@{/categorias}">Categorías</a>
+            <a th:href="@{/ubicaciones}">Ubicaciones</a>
+            <a href="#">Reportes</a>
+            <a href="#">Usuarios</a>
+            <a th:href="@{/logout}">Cerrar sesión</a>
+        </nav>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="main">
+
+        <header class="topbar">
+
+            <h3>Módulo de Despachos</h3>
+
+            <span>
+                <strong th:text="${nombre}">Administrador</strong>
+                |
+                <small th:text="${rol}">ADMIN</small>
+            </span>
+
+        </header>
+
+        <section class="content">
+
+            <div class="page-header">
+
+                <div>
+                    <h1>Registrar Despacho</h1>
+                    <p>
+                        Registro de salida de productos del almacén y actualización automática del stock.
+                    </p>
+                </div>
+
+                <div class="buttons">
+                    <a th:href="@{/inventario}" class="btn secondary">
+                        Ver Inventario
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- FORMULARIO -->
+            <div class="card">
+
+                <h2>Datos del Despacho</h2>
+
+                <form th:action="@{/despacho/guardar}" method="post">
+
+                    <div class="form-grid">
+
+                        <div>
+                            <label>Producto</label>
+
+                            <select name="idProducto" required>
+
+                                <option value="">
+                                    Seleccione producto
+                                </option>
+
+                                <option th:each="p : ${productos}"
+                                        th:value="${p.idProducto}"
+                                        th:text="${p.codigo + ' - ' + p.nombre}">
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div>
+                            <label>Cantidad</label>
+
+                            <input type="number"
+                                   name="cantidad"
+                                   min="1"
+                                   required>
+                        </div>
+
+                        <div>
+                            <label>Empresa Destino</label>
+
+                            <input type="text"
+                                   name="empresaDestino"
+                                   placeholder="Ej. Coca Cola Perú">
+                        </div>
+
+                        <div>
+                            <label>Conductor</label>
+
+                            <input type="text"
+                                   name="conductor"
+                                   placeholder="Nombre del conductor">
+                        </div>
+
+                        <div>
+                            <label>Placa Vehículo</label>
+
+                            <input type="text"
+                                   name="placaVehiculo"
+                                   placeholder="ABC-123">
+                        </div>
+
+                        <div>
+                            <label>Guía de Remisión</label>
+
+                            <input type="text"
+                                   name="guiaRemision"
+                                   placeholder="GR-000001">
+                        </div>
+
+                        <div class="full-width">
+
+                            <label>Observaciones</label>
+
+                            <textarea
+                                    name="observaciones"
+                                    rows="4"
+                                    placeholder="Observaciones adicionales del despacho">
+                            </textarea>
+
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <button type="submit" class="btn primary">
+                        Registrar Salida
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- RESUMEN -->
+            <div class="card">
+
+                <h2>Información del Proceso</h2>
+
+                <table>
+
+                    <thead>
+                    <tr>
+                        <th>Paso</th>
+                        <th>Acción</th>
+                        <th>Descripción</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr>
+                        <td>1</td>
+                        <td>Seleccionar Producto</td>
+                        <td>Elegir el producto a despachar.</td>
+                    </tr>
+
+                    <tr>
+                        <td>2</td>
+                        <td>Registrar Cantidad</td>
+                        <td>Indicar la cantidad que saldrá del almacén.</td>
+                    </tr>
+
+                    <tr>
+                        <td>3</td>
+                        <td>Datos de Transporte</td>
+                        <td>Registrar conductor, placa y guía de remisión.</td>
+                    </tr>
+
+                    <tr>
+                        <td>4</td>
+                        <td>Actualizar Stock</td>
+                        <td>El sistema descuenta automáticamente el stock disponible.</td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>
