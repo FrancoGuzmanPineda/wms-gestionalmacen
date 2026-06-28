@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Usuarios - WMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/inventario.css}">
 </head>
 <body>
@@ -87,7 +88,10 @@
                         </td>
                         <td>
                             <a th:href="@{/usuarios/editar/{id}(id=${usuario.idusuario})}" class="btn secondary">Editar</a>
-                            <a th:href="@{/usuarios/eliminar/{id}(id=${usuario.idusuario})}" class="btn danger">Eliminar</a>
+                            <button type="button" class="btn danger" data-bs-toggle="modal" data-bs-target="#eliminarModal"
+                                th:data-id="${usuario.idusuario}" th:data-nombre="${usuario.nombre}">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(usuarios)}">
@@ -98,5 +102,43 @@
         </section>
     </main>
     </div>
+    <!-- ===== MODAL DE CONFIRMACIÓN PARA ELIMINAR ===== -->
+<!-- ===== MODAL DE CONFIRMACIÓN ===== -->
+<div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+            <div class="modal-header" style="border-bottom: none; padding: 24px 24px 0 24px;">
+                <h5 class="modal-title" id="eliminarModalLabel" style="color: #e74c3c; font-weight: 700;">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+                    Confirmar Eliminación
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 20px 24px;">
+                <p style="font-size: 1.05rem; margin-bottom: 8px;">
+                    ¿Estás seguro de que deseas eliminar al usuario 
+                    <strong id="usuarioNombreEliminar" style="color: #2d3436;"></strong>?
+                </p>
+                <p style="color: #e74c3c; font-size: 0.9rem; margin-bottom: 0;">
+                    <i class="fas fa-exclamation-circle" style="margin-right: 6px;"></i>
+                    Esta acción no se puede deshacer.
+                </p>
+            </div>
+            <div class="modal-footer" style="border-top: none; padding: 0 24px 24px 24px;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" 
+                        style="padding: 10px 28px; border-radius: 8px; font-weight: 600;">
+                    Cancelar
+                </button>
+                <a href="#" id="confirmarEliminar" class="btn btn-danger" 
+                   style="padding: 10px 28px; border-radius: 8px; font-weight: 600;">
+                    <i class="fas fa-trash" style="margin-right: 8px;"></i>
+                    Sí, Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script th:src="@{/js/usuario.js}"></script>
 </body>
 </html>

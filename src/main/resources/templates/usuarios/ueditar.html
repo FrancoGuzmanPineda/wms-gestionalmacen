@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Usuario - WMS</title>
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
+    <link rel="stylesheet" th:href="@{/css/uformulario.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>WMS</h2>
+            <p>Sistema de Gestión de Almacenes</p>
+        </div>
+        <nav>
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/recepcion}">Recepciones</a>
+            <a th:href="@{/productos}">Productos</a>
+            <a th:href="@{/categorias}">Categorías</a>
+            <a th:href="@{/ubicaciones}">Ubicaciones</a>
+            <a th:href="@{/reportes}">Reportes</a>
+            <a th:href="@{/usuarios}" class="active">Usuarios</a>
+            <a th:href="@{/logout}">Cerrar sesión</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <h3>Gestion de Usuarios</h3>
+            <span>
+                <strong th:text="${nombre}">Usuario</strong>
+                |
+                <small th:text="${rol}">ROL</small>
+            </span>
+        </header>
+
+        <section class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Editar Usuario</h1>
+                    <p>Actualizar información del usuario</p>
+                </div>
+                <div class="buttons">
+                    <a th:href="@{/usuarios}" class="btn secondary">Volver a Usuarios</a>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 30px;">
+                <form th:action="@{/usuarios/actualizar/{id}(id=${usuario.idusuario})}" 
+                      th:object="${usuario}" method="post">
+
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo:</label>
+                        <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="correo">Correo Electrónico:</label>
+                        <input type="email" id="correo" th:field="*{correo}" class="form-control" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                        <label for="clave">Nueva Contraseña:</label>
+                        <input type="password" id="clave" th:field="*{clave}" class="form-control" placeholder="Ingrese nueva contraseña o deje en blanco para no cambiar">
+                    </div>
+
+                    <div class="form-group half">
+                        <label for="rol">Rol:</label>
+                        <select id="rol" th:field="*{rol}" class="form-control" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="ADMIN">Administrador</option>
+                            <option value="EMPLOYEE">Trabajador</option>
+                            <option value="USER">Usuario</option>
+                        </select>
+                    </div>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label for="estado">
+                            <span>Estado:</span>
+                            <input type="checkbox" th:field="*{estado}" checked>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn primary">Actualizar Usuario</button>
+                        <a th:href="@{/usuarios}" class="btn secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

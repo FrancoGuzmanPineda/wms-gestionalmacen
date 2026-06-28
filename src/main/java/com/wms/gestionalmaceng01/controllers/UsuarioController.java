@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -68,6 +69,48 @@ public class UsuarioController {
         usuario.setEstado(true);
         usuario.reiniciarIntentos();
         
+        usuarioRepository.save(usuario);
+        return "redirect:/usuarios";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminarUsuario(@PathVariable long id) {
+        usuarioRepository.deleteById(id);
+        return "redirect:/usuarios";
+    }
+
+    @GetMapping("/editar/{id}")
+    public String editarUsuario(@PathVariable Long id, Authentication auth, Model model) {
+        if (auth != null) {
+        String correo = auth.getName();
+        usuarioRepository.findByCorreo(correo).ifPresent(usuario -> {
+            model.addAttribute("nombre", usuario.getNombre());
+            model.addAttribute("rol", usuario.getRol());
+        });
+    }
+
+    Usuario usuario = usuarioRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    
+        model.addAttribute("usuario", usuario);
+        return "usuarios/ueditar";
+    }
+
+    @PostMapping("/actualizar/{id}")
+    public String actualizarUsuario(@PathVariable Long id, @ModelAttribute Usuario usuarioActualizado) {
+        Usuario usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    
+        usuario.setNombre(usuarioActualizado.getNombre());
+        usuario.setCorreo(usuarioActualizado.getCorreo());
+        usuario.setRol(usuarioActualizado.getRol());
+        usuario.setEstado(usuarioActualizado.isEstado());
+    
+    // Solo actualizar contraseña si se envió una nueva
+        if (usuarioActualizado.getClave() != null && !usuarioActualizado.getClave().isEmpty()) {
+            usuario.setClave(passwordEncoder.encode(usuarioActualizado.getClave()));
+        }
+    
         usuarioRepository.save(usuario);
         return "redirect:/usuarios";
     }
