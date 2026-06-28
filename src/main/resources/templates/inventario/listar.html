@@ -20,10 +20,8 @@
             <a th:href="@{/inventario}" class="active">Inventario</a>
             <a th:href="@{/recepcion}">Recepciones</a>
             <a th:href="@{/productos}">Productos</a>
-            <a th:href="@{/categorias}">Categorías</a>
-            <a th:href="@{/ubicaciones}">Ubicaciones</a>
             <a th:href="@{/reportes}">Reportes</a>
-            <a href="#">Usuarios</a>
+            <a th:href="@{/usuarios}">Usuarios</a>
             <a th:href="@{/logout}">Cerrar sesión</a>
         </nav>
     </aside>
@@ -79,7 +77,7 @@
                 <button>Limpiar filtros</button>
             </div>
 
-            <div class="card">
+            <div class="card" style="padding: 30px;">
                 <table>
                     <thead>
                         <tr>
@@ -126,53 +124,14 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="buttons" style="margin-top: 20px;">
+                    <a th:href="@{/movimientos}" class="btn primary">
+                        <i class="fas fa-history"></i> Movimientos de Ingreso
+                    </a>
+                </div>
             </div>
-
-            <div class="card movimientos">
-                <h2>Últimos Movimientos de Ingreso</h2>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Ubicación</th>
-                            <th>Usuario</th>
-                            <th>Movimiento</th>
-                            <th>Observación</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr th:each="movimiento : ${movimientos}">
-                            <td th:text="${movimiento.fecha}">Fecha</td>
-                            <td th:text="${movimiento.producto.nombre}">Producto</td>
-                            <td th:text="${movimiento.cantidad}">0</td>
-                            <td th:text="${movimiento.ubicacion.codigoEstante}">A-01</td>
-                            <td th:text="${movimiento.usuario.nombre}">Usuario</td>
-                            <td>
-                                <span class="badge success" th:text="${movimiento.tipoMovimiento}">
-                                    Ingreso
-                                </span>
-                            </td>
-                            <td th:text="${movimiento.observacion}">Observación</td>
-                        </tr>
-
-                        <tr th:if="${#lists.isEmpty(movimientos)}">
-                            <td colspan="7" class="empty">
-                                No hay movimientos de ingreso registrados.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
         </section>
-
     </main>
-
 </div>
-
 </body>
 </html>

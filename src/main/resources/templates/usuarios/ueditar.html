@@ -18,8 +18,6 @@
             <a th:href="@{/inventario}">Inventario</a>
             <a th:href="@{/recepcion}">Recepciones</a>
             <a th:href="@{/productos}">Productos</a>
-            <a th:href="@{/categorias}">Categorías</a>
-            <a th:href="@{/ubicaciones}">Ubicaciones</a>
             <a th:href="@{/reportes}">Reportes</a>
             <a th:href="@{/usuarios}" class="active">Usuarios</a>
             <a th:href="@{/logout}">Cerrar sesión</a>
@@ -72,8 +70,7 @@
                         <select id="rol" th:field="*{rol}" class="form-control" required>
                             <option value="">Seleccionar...</option>
                             <option value="ADMIN">Administrador</option>
-                            <option value="EMPLOYEE">Trabajador</option>
-                            <option value="USER">Usuario</option>
+                            <option value="SUPERVISOR">Supervisor</option>
                         </select>
                     </div>
                     </div>

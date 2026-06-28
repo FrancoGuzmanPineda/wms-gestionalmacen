@@ -40,6 +40,11 @@ public class UsuarioController {
     public String nuevoUsuario(Authentication auth, Model model) {
         cargarUsuarioSesion(auth, model);
 
+        // ✅ Verificar que solo ADMIN pueda acceder
+        if (auth == null || !auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/usuarios";
+    }
+
         Usuario nuevo = new Usuario();
         nuevo.setEstado(true);
         model.addAttribute("usuario", nuevo);

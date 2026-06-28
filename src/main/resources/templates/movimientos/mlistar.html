@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Movimientos - WMS</title>
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>WMS</h2>
+            <p>Sistema de Gestión de Almacenes</p>
+        </div>
+        <nav>
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/recepcion}">Recepciones</a>
+            <a th:href="@{/productos}">Productos</a>
+            <a th:href="@{/reportes}">Reportes</a>
+            <a th:href="@{/usuarios}">Usuarios</a>
+            <a th:href="@{/logout}">Cerrar sesión</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <h3>Movimientos de Ingreso</h3>
+            <span>
+                <strong th:text="${nombre}">Usuario</strong>
+                |
+                <small th:text="${rol}">ROL</small>
+            </span>
+        </header>
+
+        <section class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Movimientos de Ingreso</h1>
+                    <p>Historial de ingresos de mercancía al almacén</p>
+                </div>
+                <div class="buttons">
+                    <a th:href="@{/inventario}" class="btn secondary">Volver a Inventario</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Ubicación</th>
+                            <th>Usuario</th>
+                            <th>Movimiento</th>
+                            <th>Observación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="7" class="empty">No hay movimientos de ingreso registrados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
