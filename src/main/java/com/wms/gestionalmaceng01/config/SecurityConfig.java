@@ -59,14 +59,13 @@ public class SecurityConfig {
             )
             .userDetailsService(userDetailsService)
             .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
+                .loginPage(LOGIN_URL)
+                .loginProcessingUrl("/perform_login")
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/dashboard", true)
                 .failureUrl(LOGIN_URL + "?error=true")
                 .permitAll()
-        
             )
             .logout(logout -> logout
                 .logoutSuccessUrl(LOGIN_URL + "?logout=true")

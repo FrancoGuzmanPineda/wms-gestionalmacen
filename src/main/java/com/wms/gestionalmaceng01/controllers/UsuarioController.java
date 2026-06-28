@@ -1,4 +1,5 @@
 package com.wms.gestionalmaceng01.controllers;
+
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,48 +29,74 @@ public class UsuarioController {
 
     @GetMapping
     public String listarUsuarios(Authentication auth, Model model) {
-        // Datos del usuario autenticado
-        if (auth != null) {
-            String correo = auth.getName();
-            usuarioRepository.findByCorreo(correo).ifPresent(usuario -> {
-                model.addAttribute("nombre", usuario.getNombre());
-                model.addAttribute("rol", usuario.getRol());
-            });
-        }
+        cargarUsuarioSesion(auth, model);
 
-        // Obtener todos los usuarios de la base de datos
         List<Usuario> usuarios = usuarioRepository.findAll();
         model.addAttribute("usuarios", usuarios);
         return "usuarios/ulistar";
     }
 
-        // ===== MOSTRAR FORMULARIO NUEVO =====
-        @GetMapping("/uformulario")
-        public String nuevoUsuario(Authentication auth, Model model) {
-        if (auth != null) {
-            String correo = auth.getName();
-            usuarioRepository.findByCorreo(correo).ifPresent(usuario -> {
-                model.addAttribute("nombre", usuario.getNombre());
-                model.addAttribute("rol", usuario.getRol());
-            });
-        }
+    @GetMapping({"/nuevo", "/uformulario"})
+    public String nuevoUsuario(Authentication auth, Model model) {
+        cargarUsuarioSesion(auth, model);
 
         Usuario nuevo = new Usuario();
         nuevo.setEstado(true);
-        
         model.addAttribute("usuario", nuevo);
+        model.addAttribute("modoEdicion", false);
         return "usuarios/uformulario";
     }
 
-    // ===== GUARDAR USUARIO =====
-    @SuppressWarnings("squid:S4684")
+    @GetMapping("/editar/{id}")
+    public String editarUsuario(@PathVariable("id") Long id, Authentication auth, Model model) {
+        cargarUsuarioSesion(auth, model);
+
+        Usuario usuario = usuarioRepository.findById(id).orElse(new Usuario());
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("modoEdicion", true);
+        return "usuarios/uformulario";
+    }
+
     @PostMapping("/guardar")
     public String guardarUsuario(@ModelAttribute Usuario usuario) {
+        if (usuario.getIdusuario() != null) {
+            usuarioRepository.findById(usuario.getIdusuario()).ifPresent(usuarioExistente -> {
+                usuarioExistente.setNombre(usuario.getNombre());
+                usuarioExistente.setCorreo(usuario.getCorreo());
+                usuarioExistente.setRol(usuario.getRol());
+                usuarioExistente.setEstado(usuario.isEstado());
+
+                if (usuario.getClave() != null && !usuario.getClave().isBlank()) {
+                    usuarioExistente.setClave(passwordEncoder.encode(usuario.getClave()));
+                    usuarioExistente.reiniciarIntentos();
+                }
+
+                usuarioRepository.save(usuarioExistente);
+            });
+            return "redirect:/usuarios";
+        }
+
         usuario.setClave(passwordEncoder.encode(usuario.getClave()));
-        usuario.setEstado(true);
         usuario.reiniciarIntentos();
-        
         usuarioRepository.save(usuario);
         return "redirect:/usuarios";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminarUsuario(@PathVariable("id") Long id) {
+        usuarioRepository.deleteById(id);
+        return "redirect:/usuarios";
+    }
+
+    private void cargarUsuarioSesion(Authentication auth, Model model) {
+        if (auth == null) {
+            return;
+        }
+
+        String correo = auth.getName();
+        usuarioRepository.findByCorreo(correo).ifPresent(usuario -> {
+            model.addAttribute("nombre", usuario.getNombre());
+            model.addAttribute("rol", usuario.getRol());
+        });
     }
 }

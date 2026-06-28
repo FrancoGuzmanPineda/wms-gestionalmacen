@@ -26,7 +26,9 @@ public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     private static final String DASHBOARD_ADMIN = "dashboardadmin";
-     private static final String ERROR_KEY = "error";
+    private static final String DASHBOARD_EMPLEADO = "dashboardempleado";
+    private static final String DASHBOARD_USER = "dashboardusuario";
+    private static final String ERROR_KEY = "error";
 
     private final UsuarioRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -39,12 +41,6 @@ public class AuthController {
     @GetMapping("/login")
     public String login() {
         return "login";
-    }
-
-    @PostMapping("/login")
-    public String processLogin() {
-    // Spring Security maneja la autenticación automáticamente
-        return "redirect:/dashboard";
     }
 
     @GetMapping("/dashboard")
@@ -61,14 +57,27 @@ public class AuthController {
 
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            model.addAttribute("nombre", usuario.getNombre());
-            model.addAttribute("rol", usuario.getRol());
+            String rol = usuario.getRol();
 
-            log.info("Usuario autenticado: {} - Rol: {}", correo, usuario.getRol());
-            return DASHBOARD_ADMIN;
+            model.addAttribute("nombre", usuario.getNombre());
+            model.addAttribute("rol", rol);
+
+            log.info("Usuario autenticado: {} - Rol: {}", correo, rol);
+
+            if ("ADMIN".equals(rol)) {
+                return DASHBOARD_ADMIN;
+            }
+
+            if ("EMPLOYEE".equals(rol)) {
+                return DASHBOARD_EMPLEADO;
+            }
+
+            if ("USER".equals(rol)) {
+                return DASHBOARD_USER;
+            }
         }
 
-        return "redirect:/login";
+        return DASHBOARD_USER;
     }
 
     @GetMapping("/api/verificar-usuario")

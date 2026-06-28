@@ -25,9 +25,9 @@ public class Usuario {
     @Column(name = "rol")
     private String rol;
     @Column(name = "estado")
-    private boolean estado;
+    private boolean estado = true;
     @Column(name = "intentos_fallidos")
-    private int intentosFallidos;
+    private int intentosFallidos = 0;
     @Column(name = "bloqueado_hasta")
     private LocalDateTime bloqueadoHasta;
 
@@ -38,6 +38,7 @@ public class Usuario {
         this.correo = correo;
         this.clave = clave;
         this.rol = rol;
+        this.estado = true;
     }
 
     public boolean estaBloqueado() {
