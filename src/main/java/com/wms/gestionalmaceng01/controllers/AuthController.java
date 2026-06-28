@@ -64,20 +64,11 @@ public class AuthController {
 
             log.info("Usuario autenticado: {} - Rol: {}", correo, rol);
 
-            if ("ADMIN".equals(rol)) {
+            if ("ADMIN".equals(rol) || "SUPERVISOR".equals(rol)) {
                 return DASHBOARD_ADMIN;
-            }
-
-            if ("EMPLOYEE".equals(rol)) {
-                return DASHBOARD_EMPLEADO;
-            }
-
-            if ("USER".equals(rol)) {
-                return DASHBOARD_USER;
-            }
-        }
-
-        return DASHBOARD_USER;
+         }
+     }
+        return "redirect:/login";
     }
 
     @GetMapping("/api/verificar-usuario")
