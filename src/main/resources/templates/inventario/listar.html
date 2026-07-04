@@ -19,7 +19,6 @@
             <a th:href="@{/dashboard}">Dashboard</a>
             <a th:href="@{/inventario}" class="active">Inventario</a>
             <a th:href="@{/recepcion}">Recepciones</a>
-            <a th:href="@{/productos}">Productos</a>
             <a th:href="@{/reportes}">Reportes</a>
             <a th:if="${rol == 'ADMIN'}" th:href="@{/usuarios}">Usuarios</a>
             <a th:href="@{/logout}">Cerrar sesión</a>
@@ -53,10 +52,10 @@
                 </div>
             </div>
 
-            <div class="tabs">
-                <a th:href="@{/inventario}" class="active">Productos</a>
-                <a th:href="@{/categorias}">Categorías</a>
-                <a th:href="@{/ubicaciones}">Ubicaciones</a>
+            <!-- SUBCATEGORÍAS DEL MÓDULO INVENTARIO -->
+            <div class="tabs" aria-label="Subcategorías de Inventario">
+                <a th:href="@{/inventario}" class="active">Existencias</a>
+                <a th:href="@{/productos}">Productos</a>
             </div>
 
             <div class="filters">

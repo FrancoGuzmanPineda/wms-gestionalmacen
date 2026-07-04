@@ -15,9 +15,8 @@
 
         <nav>
             <a th:href="@{/dashboard}">Dashboard</a>
-            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/inventario}" class="active">Inventario</a>
             <a th:href="@{/recepcion}">Recepciones</a>
-            <a th:href="@{/productos}" class="active">Productos</a>
             <a th:href="@{/reportes}">Reportes</a>
             <a th:if="${rol == 'ADMIN'}" th:href="@{/usuarios}">Usuarios</a>
             <a th:href="@{/logout}">Cerrar sesión</a>
@@ -46,9 +45,14 @@
 
                 <div class="buttons">
                     <a th:href="@{/dashboard}" class="btn secondary">Volver al Dashboard</a>
-                    <a th:href="@{/inventario}" class="btn secondary">Volver al Inventario</a>
                     <a th:href="@{/productos/nuevo}" class="btn primary">Nuevo Producto</a>
                 </div>
+            </div>
+
+            <!-- SUBCATEGORÍAS DEL MÓDULO INVENTARIO -->
+            <div class="tabs" aria-label="Subcategorías de Inventario">
+                <a th:href="@{/inventario}">Existencias</a>
+                <a th:href="@{/productos}" class="active">Productos</a>
             </div>
 
             <div class="card">
