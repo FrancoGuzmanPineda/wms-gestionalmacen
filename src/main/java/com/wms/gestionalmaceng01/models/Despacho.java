@@ -19,8 +19,12 @@ public class Despacho {
     private Integer idDespacho;
 
     @ManyToOne
-    @JoinColumn(name = "id_producto")
+    @JoinColumn(name = "id_producto", nullable = false)
     private Producto producto;
+
+    @ManyToOne
+    @JoinColumn(name = "id_ubicacion", nullable = false)
+    private Ubicacion ubicacion;
 
     private Integer cantidad;
 
@@ -39,7 +43,7 @@ public class Despacho {
     private String estado;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
     public Despacho() {
@@ -61,6 +65,14 @@ public class Despacho {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
+    }
+
+    public Ubicacion getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(Ubicacion ubicacion) {
+        this.ubicacion = ubicacion;
     }
 
     public Integer getCantidad() {

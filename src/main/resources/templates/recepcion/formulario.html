@@ -5,12 +5,14 @@
     <title>Recepción de Mercancía - WMS</title>
     <link rel="stylesheet" th:href="@{/css/inventario.css}">
 </head>
+
 <body>
 
 <div class="layout">
 
     <!-- MENÚ LATERAL -->
     <aside class="sidebar">
+
         <div class="logo">
             <h2>WMS</h2>
             <p>Sistema de Gestión de Almacenes</p>
@@ -19,107 +21,250 @@
         <nav>
             <a th:href="@{/dashboard}">Dashboard</a>
             <a th:href="@{/inventario}">Inventario</a>
-            <a th:href="@{/recepcion}" class="active">Recepciones</a>
+
+            <a th:href="@{/recepcion}" class="active">
+                Recepciones
+            </a>
+
             <a th:href="@{/productos}">Productos</a>
             <a th:href="@{/reportes}">Reportes</a>
-            <a th:if="${rol == 'ADMIN'}" th:href="@{/usuarios}">Usuarios</a>
-            <a th:href="@{/logout}">Cerrar sesión</a>
+
+            <a th:if="${rol == 'ADMIN'}"
+               th:href="@{/usuarios}">
+                Usuarios
+            </a>
+
+            <a th:href="@{/logout}">
+                Cerrar sesión
+            </a>
         </nav>
+
     </aside>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main">
 
         <header class="topbar">
+
             <h3>Recepción de Mercancía</h3>
 
             <span>
-                <strong th:text="${nombre}">Usuario</strong>
+                <strong th:text="${nombre}">
+                    Usuario
+                </strong>
+
                 |
-                <small th:text="${rol}">ROL</small>
+
+                <small th:text="${rol}">
+                    ROL
+                </small>
             </span>
+
         </header>
 
         <section class="content">
 
+            <!-- ENCABEZADO -->
             <div class="page-header">
+
                 <div>
                     <h1>Registrar Recepción</h1>
-                    <p>Ingreso de productos al almacén y actualización automática de stock</p>
+
+                    <p>
+                        Ingreso de productos al almacén y actualización
+                        automática de stock
+                    </p>
                 </div>
 
                 <div class="buttons">
-                    <a th:href="@{/dashboard}" class="btn secondary">Volver al Dashboard</a>
-                    <a th:href="@{/inventario}" class="btn secondary">Ver Inventario</a>
+
+                    <a th:href="@{/dashboard}"
+                       class="btn secondary">
+                        Volver al Dashboard
+                    </a>
+
+                    <a th:href="@{/inventario}"
+                       class="btn secondary">
+                        Ver Inventario
+                    </a>
+
                 </div>
+
+            </div>
+
+            <!-- MENSAJE DE ÉXITO -->
+            <div th:if="${mensajeExito}"
+                 class="form-card"
+                 style="border-left: 5px solid #198754;
+                        margin-bottom: 20px;">
+
+                <strong th:text="${mensajeExito}">
+                    Operación realizada correctamente.
+                </strong>
+
+            </div>
+
+            <!-- MENSAJE DE ERROR -->
+            <div th:if="${mensajeError}"
+                 class="form-card"
+                 style="border-left: 5px solid #dc3545;
+                        margin-bottom: 20px;">
+
+                <strong th:text="${mensajeError}">
+                    Ocurrió un error.
+                </strong>
+
             </div>
 
             <!-- FORMULARIO DE RECEPCIÓN -->
             <div class="form-card">
 
-                <form th:action="@{/recepcion/registrar}" method="post">
+                <form th:action="@{/recepcion/registrar}"
+                      method="post">
 
                     <div class="form-grid">
 
+                        <!-- PRODUCTO -->
                         <div class="form-group">
-                            <label>Producto</label>
-                            <select name="idProducto" required>
-                                <option value="">Seleccione un producto</option>
+
+                            <label for="idProducto">
+                                Producto
+                            </label>
+
+                            <select id="idProducto"
+                                    name="idProducto"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un producto
+                                </option>
+
                                 <option th:each="producto : ${productos}"
                                         th:value="${producto.idProducto}"
-                                        th:text="${producto.codigo + ' - ' + producto.nombre}">
+                                        th:text="${producto.codigo
+                                            + ' - '
+                                            + producto.nombre}">
                                 </option>
+
                             </select>
+
                         </div>
 
+                        <!-- UBICACIÓN -->
                         <div class="form-group">
-                            <label>Ubicación</label>
-                            <select name="idUbicacion" required>
-                                <option value="">Seleccione una ubicación</option>
+
+                            <label for="idUbicacion">
+                                Ubicación
+                            </label>
+
+                            <select id="idUbicacion"
+                                    name="idUbicacion"
+                                    required>
+
+                                <option value="">
+                                    Seleccione una ubicación
+                                </option>
+
                                 <option th:each="ubicacion : ${ubicaciones}"
                                         th:value="${ubicacion.idUbicacion}"
-                                        th:text="${ubicacion.codigoEstante + ' - ' + ubicacion.pasillo}">
+                                        th:text="${ubicacion.codigoEstante
+                                            + ' - '
+                                            + ubicacion.pasillo}">
                                 </option>
+
                             </select>
+
                         </div>
 
+                        <!-- TIPO DE MOVIMIENTO -->
                         <div class="form-group">
-                            <label>Tipo de movimiento</label>
-                            <input type="text" value="Ingreso automático" readonly>
+
+                            <label for="tipoMovimiento">
+                                Tipo de movimiento
+                            </label>
+
+                            <input id="tipoMovimiento"
+                                   type="text"
+                                   value="Ingreso automático"
+                                   readonly>
+
+                            <small>
+                                El sistema registrará automáticamente
+                                un movimiento de ingreso.
+                            </small>
+
                         </div>
 
+                        <!-- USUARIO AUTENTICADO -->
                         <div class="form-group">
-                            <label>Usuario responsable</label>
-                            <select name="idUsuario" required>
-                                <option value="">Seleccione un usuario</option>
-                                <option th:each="usuario : ${usuarios}"
-                                        th:value="${usuario.idusuario}"
-                                        th:text="${usuario.nombre}">
-                                </option>
-                            </select>
+
+                            <label for="usuarioResponsable">
+                                Usuario responsable
+                            </label>
+
+                            <input id="usuarioResponsable"
+                                   type="text"
+                                   th:value="${nombre + ' - ' + correo}"
+                                   readonly>
+
+                            <small>
+                                El responsable se obtiene automáticamente
+                                de la sesión iniciada.
+                            </small>
+
                         </div>
 
+                        <!-- CANTIDAD -->
                         <div class="form-group">
-                            <label>Cantidad recibida</label>
-                            <input type="number"
+
+                            <label for="cantidad">
+                                Cantidad recibida
+                            </label>
+
+                            <input id="cantidad"
+                                   type="number"
                                    name="cantidad"
                                    min="1"
+                                   step="1"
                                    placeholder="Ingrese la cantidad"
                                    required>
+
                         </div>
 
+                        <!-- OBSERVACIÓN -->
                         <div class="form-group full">
-                            <label>Observación</label>
-                            <textarea name="observacion"
+
+                            <label for="observacion">
+                                Observación
+                            </label>
+
+                            <textarea id="observacion"
+                                      name="observacion"
                                       rows="4"
+                                      maxlength="255"
                                       placeholder="Ingrese una observación opcional"></textarea>
+
+                            <small>
+                                Máximo 255 caracteres.
+                            </small>
+
                         </div>
 
                     </div>
 
+                    <!-- ACCIONES -->
                     <div class="form-actions">
-                        <a th:href="@{/inventario}" class="btn secondary">Cancelar</a>
-                        <button type="submit" class="btn primary">Registrar Recepción</button>
+
+                        <a th:href="@{/inventario}"
+                           class="btn secondary">
+                            Cancelar
+                        </a>
+
+                        <button type="submit"
+                                class="btn primary">
+                            Registrar Recepción
+                        </button>
+
                     </div>
 
                 </form>
@@ -128,9 +273,11 @@
 
             <!-- HISTORIAL DE RECEPCIONES -->
             <div class="card movimientos">
+
                 <h2>Recepciones Registradas</h2>
 
                 <table>
+
                     <thead>
                         <tr>
                             <th>Fecha</th>
@@ -144,27 +291,59 @@
                     </thead>
 
                     <tbody>
+
                         <tr th:each="movimiento : ${movimientos}">
-                            <td th:text="${movimiento.fecha}">Fecha</td>
-                            <td th:text="${movimiento.producto.nombre}">Producto</td>
-                            <td th:text="${movimiento.cantidad}">0</td>
-                            <td th:text="${movimiento.ubicacion.codigoEstante}">A-01</td>
-                            <td th:text="${movimiento.usuario.nombre}">Usuario</td>
+
+                            <td th:text="${movimiento.fecha}">
+                                Fecha
+                            </td>
+
+                            <td th:text="${movimiento.producto.nombre}">
+                                Producto
+                            </td>
+
+                            <td th:text="${movimiento.cantidad}">
+                                0
+                            </td>
+
+                            <td th:text="${movimiento.ubicacion.codigoEstante}">
+                                A-01
+                            </td>
+
+                            <td th:text="${movimiento.usuario.nombre}">
+                                Usuario
+                            </td>
+
                             <td>
-                                <span class="badge success" th:text="${movimiento.tipoMovimiento}">
+                                <span class="badge success"
+                                      th:text="${movimiento.tipoMovimiento}">
                                     Ingreso
                                 </span>
                             </td>
-                            <td th:text="${movimiento.observacion}">Observación</td>
+
+                            <td th:text="${movimiento.observacion != null
+                                    && !movimiento.observacion.isEmpty()
+                                    ? movimiento.observacion
+                                    : '-'}">
+                                Observación
+                            </td>
+
                         </tr>
 
-                        <tr th:if="${#lists.isEmpty(movimientos)}">
-                            <td colspan="7" class="empty">
+                        <tr th:if="${movimientos == null
+                                || #lists.isEmpty(movimientos)}">
+
+                            <td colspan="7"
+                                class="empty">
                                 No hay recepciones registradas.
                             </td>
+
                         </tr>
+
                     </tbody>
+
                 </table>
+
             </div>
 
         </section>

@@ -2,6 +2,7 @@ package com.wms.gestionalmaceng01.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,9 @@ import com.wms.gestionalmaceng01.repository.UsuarioRepository;
 
 @Service
 public class RecepcionService {
+
+    private static final Set<String> ROLES_AUTORIZADOS =
+            Set.of("ADMIN", "SUPERVISOR");
 
     private final MovimientoRepository movimientoRepository;
     private final ProductoRepository productoRepository;
@@ -44,28 +48,70 @@ public class RecepcionService {
     public Movimiento registrarRecepcion(
             Integer idProducto,
             Integer idUbicacion,
-            Long idUsuario,
+            String correoUsuario,
             Integer cantidad,
             String observacion
     ) {
         if (cantidad == null || cantidad <= 0) {
-            throw new RuntimeException("La cantidad debe ser mayor a cero");
+            throw new IllegalArgumentException(
+                    "La cantidad debe ser mayor a cero."
+            );
         }
 
         Producto producto = productoRepository.findById(idProducto)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "El producto seleccionado no existe."
+                ));
+
+        if (!"Activo".equalsIgnoreCase(producto.getEstado())) {
+            throw new IllegalArgumentException(
+                    "El producto seleccionado está inactivo."
+            );
+        }
 
         Ubicacion ubicacion = ubicacionRepository.findById(idUbicacion)
-                .orElseThrow(() -> new RuntimeException("Ubicación no encontrada"));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "La ubicación seleccionada no existe."
+                ));
 
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        if (!"Activo".equalsIgnoreCase(ubicacion.getEstado())) {
+            throw new IllegalArgumentException(
+                    "La ubicación seleccionada está inactiva."
+            );
+        }
 
-        TipoMovimiento tipoMovimientoIngreso = tipoMovimientoRepository
-                .findByNombreTipoMovimiento("Ingreso")
-                .orElseThrow(() -> new RuntimeException("No existe el tipo de movimiento Ingreso"));
+        Usuario usuario = usuarioRepository.findByCorreo(correoUsuario)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No se encontró al usuario autenticado."
+                ));
 
-        int stockActual = producto.getStockActual() == null ? 0 : producto.getStockActual();
+        if (!usuario.isEstado()) {
+            throw new IllegalArgumentException(
+                    "El usuario autenticado está inactivo."
+            );
+        }
+
+        String rol = usuario.getRol() == null
+                ? ""
+                : usuario.getRol().trim().toUpperCase();
+
+        if (!ROLES_AUTORIZADOS.contains(rol)) {
+            throw new IllegalArgumentException(
+                    "El usuario no tiene autorización para registrar recepciones."
+            );
+        }
+
+        TipoMovimiento tipoMovimientoIngreso =
+                tipoMovimientoRepository
+                        .findByNombreTipoMovimiento("Ingreso")
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "No existe el tipo de movimiento Ingreso."
+                        ));
+
+        int stockActual = producto.getStockActual() == null
+                ? 0
+                : producto.getStockActual();
+
         producto.setStockActual(stockActual + cantidad);
         productoRepository.save(producto);
 
@@ -77,7 +123,7 @@ public class RecepcionService {
         movimiento.setTipoMovimiento("Ingreso");
         movimiento.setCantidad(cantidad);
         movimiento.setFecha(LocalDateTime.now());
-        movimiento.setObservacion(observacion);
+        movimiento.setObservacion(limitarObservacion(observacion));
         movimiento.setEstado("Completado");
 
         return movimientoRepository.save(movimiento);
@@ -89,5 +135,17 @@ public class RecepcionService {
 
     public List<Movimiento> listarTodosLosMovimientos() {
         return movimientoRepository.findAll();
+    }
+
+    private String limitarObservacion(String observacion) {
+        if (observacion == null || observacion.isBlank()) {
+            return null;
+        }
+
+        String texto = observacion.trim();
+
+        return texto.length() <= 255
+                ? texto
+                : texto.substring(0, 255);
     }
 }
