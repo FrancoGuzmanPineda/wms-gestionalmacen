@@ -5,24 +5,11 @@
     <title>Usuarios - WMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/inventario.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 </head>
 <body>
     <div class="layout">
-        <aside class="sidebar">
-        <div class="logo">
-            <h2>WMS</h2>
-            <p>Sistema de Gestión de Almacenes</p>
-        </div>
-
-        <nav>
-            <a th:href="@{/dashboard}">Dashboard</a>
-            <a th:href="@{/inventario}">Inventario</a>
-            <a th:href="@{/recepcion}">Recepciones</a>
-            <a th:href="@{/reportes}">Reportes</a>
-            <a th:href="@{/usuarios}" class="active">Usuarios</a>
-            <a th:href="@{/logout}">Cerrar sesión</a>
-        </nav>
-    </aside>
+        <th:block th:replace="~{fragments/sidebar :: sidebar(seccionActiva='usuarios')}"></th:block>
     <main class="main">
     
         <header class="topbar">

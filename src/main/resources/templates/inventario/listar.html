@@ -4,26 +4,13 @@
     <meta charset="UTF-8">
     <title>Inventario - WMS</title>
     <link rel="stylesheet" th:href="@{/css/inventario.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 </head>
 <body>
 
 <div class="layout">
 
-    <aside class="sidebar">
-        <div class="logo">
-            <h2>WMS</h2>
-            <p>Sistema de Gestión de Almacenes</p>
-        </div>
-
-        <nav>
-            <a th:href="@{/dashboard}">Dashboard</a>
-            <a th:href="@{/inventario}" class="active">Inventario</a>
-            <a th:href="@{/recepcion}">Recepciones</a>
-            <a th:href="@{/reportes}">Reportes</a>
-            <a th:if="${rol == 'ADMIN'}" th:href="@{/usuarios}">Usuarios</a>
-            <a th:href="@{/logout}">Cerrar sesión</a>
-        </nav>
-    </aside>
+    <th:block th:replace="~{fragments/sidebar :: sidebar(seccionActiva='inventario')}"></th:block>
 
     <main class="main">
 

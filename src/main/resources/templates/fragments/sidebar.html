@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th:block th:fragment="sidebar(seccionActiva)">
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>WMS</h2>
+            <p>Sistema de Gestión de Almacenes</p>
+        </div>
+
+        <nav>
+            <a th:href="@{/dashboard}"
+               th:classappend="${seccionActiva == 'dashboard'} ? 'active' : ''">
+                Dashboard
+            </a>
+
+            <a th:href="@{/inventario}"
+               th:classappend="${seccionActiva == 'inventario'} ? 'active' : ''">
+                Inventario
+            </a>
+
+            <a th:href="@{/recepcion}"
+               th:classappend="${seccionActiva == 'recepcion'} ? 'active' : ''">
+                Recepciones
+            </a>
+
+            <a th:href="@{/despacho}"
+               th:classappend="${seccionActiva == 'despacho'} ? 'active' : ''">
+                Despachos
+            </a>
+
+            <a th:href="@{/reportes}"
+               th:classappend="${seccionActiva == 'reportes'} ? 'active' : ''">
+                Reportes
+            </a>
+
+            <a th:if="${rol == 'ADMIN'}"
+               th:href="@{/usuarios}"
+               th:classappend="${seccionActiva == 'usuarios'} ? 'active' : ''">
+                Usuarios
+            </a>
+
+            <a th:href="@{/logout}">
+                Cerrar sesión
+            </a>
+        </nav>
+    </aside>
+</th:block>
+
+</body>
+</html>
