@@ -1,172 +1,521 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard - WMS</title>
-    <link rel="stylesheet" th:href="@{/css/inventario.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard Ejecutivo - WMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<div class="layout">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
 
-    <!-- MENÚ LATERAL -->
-    <th:block th:replace="~{fragments/sidebar :: sidebar(seccionActiva='dashboard')}"></th:block>
+  <body>
+    <div class="layout">
+      <!-- MENÚ LATERAL -->
+      <th:block
+        th:replace="~{fragments/sidebar :: sidebar(seccionActiva='dashboard')}"
+      ></th:block>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main">
-
+      <!-- CONTENIDO PRINCIPAL -->
+      <main class="main">
         <header class="topbar">
-            <h3>Dashboard Principal</h3>
+          <h3>Dashboard Ejecutivo WMS</h3>
 
-            <span>
-                <strong th:text="${nombre}">Administrador</strong>
-                |
-                <small th:text="${rol}">ADMIN</small>
-            </span>
+          <div class="user-info">
+            <strong th:text="${nombre}">Administrador</strong>
+            |
+            <small th:text="${rol}">ADMIN</small>
+          </div>
         </header>
 
         <section class="content">
-
-            <div class="page-header">
-                <div>
-                    <h1>Panel de Control</h1>
-                    <p>Resumen general del módulo de recepción, inventario y productos</p>
-                </div>
-
-                <div class="buttons">
-                    <a th:href="@{/recepcion}" class="btn primary">Registrar Recepción</a>
-                    <a th:href="@{/productos/nuevo}" class="btn secondary">Nuevo Producto</a>
-                </div>
+          <!-- ENCABEZADO -->
+          <div class="page-header">
+            <div>
+              <h1>Panel Ejecutivo de Almacén</h1>
+              <p>
+                Monitoreo actualizado de inventario, movimientos, alertas
+                operativas y valor del almacén.
+              </p>
             </div>
 
-            <!-- TARJETAS RESUMEN -->
-            <div class="dashboard-cards">
+            <div class="header-actions">
+              <a th:href="@{/recepcion}" class="btn primary"
+                >📥 Nueva Recepción</a
+              >
+              <a th:href="@{/despacho}" class="btn secondary"
+                >📤 Nuevo Despacho</a
+              >
+              <a th:href="@{/dashboard/pdf}" class="btn pdf"
+                >📄 Descargar PDF</a
+              >
+            </div>
+          </div>
 
-                <div class="summary-card">
-                    <h3>Inventario</h3>
-                    <p>📦</p>
-                    <span>Consulta de stock actual y productos activos.</span>
-                </div>
-
-                <div class="summary-card">
-                    <h3>Recepción</h3>
-                    <p>📥</p>
-                    <span>Registro de ingreso de mercancía al almacén.</span>
-                </div>
-
-                <div class="summary-card">
-                    <h3>Productos</h3>
-                    <p>🏷️</p>
-                    <span>Gestión y mantenimiento de productos.</span>
-                </div>
-                <div class="summary-card">
-                <h3>Despachos</h3>
-                <p>🚚</p>
-                <span>Registro de salidas de mercancía y control de despachos.</span>
-            </div>  
+          <!-- KPIs PRINCIPALES -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="icon">📦</div>
+              <h4>Total de productos</h4>
+              <p
+                class="number"
+                th:text="${totalProductos != null ? totalProductos : 0}"
+              >
+                0
+              </p>
+              <div class="detail">Productos registrados</div>
             </div>
 
-            <!-- ACCESOS RÁPIDOS -->
-            <div class="card">
-                <h2>Accesos rápidos</h2>
-
-                <div class="quick-actions">
-
-                    <a th:href="@{/inventario}" class="quick-card">
-                        <h3>Inventario</h3>
-                        <p>Consultar productos, stock actual, stock mínimo y estado de existencias.</p>
-                    </a>
-
-                    <a th:href="@{/recepcion}" class="quick-card">
-                        <h3>Recepción</h3>
-                        <p>Registrar ingresos de mercancía y actualizar stock automáticamente.</p>
-                    </a>
-
-                    <a th:href="@{/productos}" class="quick-card">
-                        <h3>Productos</h3>
-                        <p>Crear, editar y administrar productos del almacén.</p>
-                    </a>
-
-                    <a th:href="@{/productos/nuevo}" class="quick-card">
-                        <h3>Nuevo Producto</h3>
-                        <p>Registrar un nuevo producto con categoría, tipo, costo, precio y stock.</p>
-                    </a>
-
-                    <a th:href="@{/categorias}" class="quick-card">
-                        <h3>Categorías</h3>
-                        <p>Mantenimiento de categorías de productos.</p>
-                    </a>
-
-                    <a th:href="@{/ubicaciones}" class="quick-card">
-                        <h3>Ubicaciones</h3>
-                        <p>Gestión de estantes, pasillos y zonas del almacén.</p>
-                    </a>
-
-                </div>
+            <div class="kpi-card">
+              <div class="icon">🏬</div>
+              <h4>Stock total</h4>
+              <p
+                class="number"
+                th:text="${stockTotal != null ? stockTotal : 0}"
+              >
+                0
+              </p>
+              <div class="detail">Unidades disponibles</div>
             </div>
 
-            <!-- FLUJO IMPLEMENTADO -->
-            <div class="card">
-                <h2>Flujo implementado</h2>
+            <div class="kpi-card">
+              <div class="icon">📥</div>
+              <h4>Entradas del día</h4>
+              <p
+                class="number"
+                th:text="${entradasDia != null ? entradasDia : 0}"
+              >
+                0
+              </p>
+              <div class="detail">Recepciones registradas hoy</div>
+            </div>
 
+            <div class="kpi-card">
+              <div class="icon">📤</div>
+              <h4>Salidas del día</h4>
+              <p
+                class="number"
+                th:text="${salidasDia != null ? salidasDia : 0}"
+              >
+                0
+              </p>
+              <div class="detail">Despachos registrados hoy</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="icon">⚠️</div>
+              <h4>Stock bajo</h4>
+              <p
+                class="number"
+                th:text="${productosStockBajo != null ? productosStockBajo : 0}"
+              >
+                0
+              </p>
+              <div class="detail">Productos bajo mínimo</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="icon">💰</div>
+              <h4>Valor inventario</h4>
+              <p
+                class="number"
+                th:text="${valorInventario != null ? valorInventario : 'S/ 0.00'}"
+              >
+                S/ 0.00
+              </p>
+              <div class="detail">Valor total estimado</div>
+            </div>
+          </div>
+
+          <!-- ALERTAS -->
+          <div class="alert-grid">
+            <div class="alert-card danger">
+              <div class="alert-icon">🚨</div>
+              <div>
+                <h3>Productos sin stock</h3>
+                <p>
+                  Actualmente:
+                  <strong
+                    th:text="${productosSinStock != null ? productosSinStock : 0}"
+                    >0</strong
+                  >
+                  productos sin existencias.
+                </p>
+              </div>
+            </div>
+
+            <div class="alert-card warning">
+              <div class="alert-icon">⚠️</div>
+              <div>
+                <h3>Productos por debajo del mínimo</h3>
+                <p>
+                  Actualmente:
+                  <strong
+                    th:text="${productosStockBajo != null ? productosStockBajo : 0}"
+                    >0</strong
+                  >
+                  productos requieren reposición.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- GRÁFICOS - BASE VISUAL -->
+          <div class="dashboard-grid">
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Entradas vs Salidas por día</h2>
+                <span>Últimos 30 días</span>
+              </div>
+              <div class="panel-body">
+                <div class="chart-box">
+                  <canvas id="chartEntradasSalidas"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Estado del inventario</h2>
+                <span>Alto / Medio / Bajo</span>
+              </div>
+              <div class="panel-body">
+                <div class="chart-box">
+                  <canvas id="chartEstadoInventario"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid two-columns">
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Top 5 productos más movidos</h2>
+                <span>Últimos 30 días</span>
+              </div>
+              <div class="panel-body">
+                <div class="chart-box">
+                  <canvas id="chartTopProductos"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Tendencia de movimientos del mes</h2>
+                <span>Últimos 30 días</span>
+              </div>
+              <div class="panel-body">
+                <div class="chart-box">
+                  <canvas id="chartTendenciaMes"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TABLAS DINÁMICAS -->
+          <div class="dashboard-grid two-columns">
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Últimos movimientos de almacén</h2>
+                <span>Últimos 30 días</span>
+              </div>
+
+              <div class="table-responsive">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Paso</th>
-                            <th>Módulo</th>
-                            <th>Descripción</th>
-                            <th>Ruta</th>
-                        </tr>
-                    </thead>
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Producto</th>
+                      <th>Tipo</th>
+                      <th>Cantidad</th>
+                      <th>Usuario</th>
+                    </tr>
+                  </thead>
 
-                    <tbody>
+                  <tbody>
+                    <tr
+                      th:if="${ultimosMovimientos == null or #lists.isEmpty(ultimosMovimientos)}"
+                    >
+                      <td colspan="5" class="empty">
+                        No hay movimientos recientes registrados en el almacén.
+                      </td>
+                    </tr>
 
-<tr>
-    <td>1</td>
-    <td>Productos</td>
-    <td>Registro y mantenimiento de productos del almacén.</td>
-    <td>
-        <a th:href="@{/productos}">/productos</a>
-    </td>
-</tr>
+                    <tr th:each="movimiento : ${ultimosMovimientos}">
+                      <td
+                        th:text="${movimiento.fecha != null ? #temporals.format(movimiento.fecha, 'dd/MM/yyyy HH:mm') : '-'}"
+                      >
+                        05/07/2026 10:30
+                      </td>
 
-<tr>
-    <td>2</td>
-    <td>Recepción</td>
-    <td>Ingreso de mercancía, selección de producto, ubicación y cantidad.</td>
-    <td>
-        <a th:href="@{/recepcion}">/recepcion</a>
-    </td>
-</tr>
+                      <td th:text="${movimiento.producto.nombre}">Producto</td>
 
-<tr>
-    <td>3</td>
-    <td>Inventario</td>
-    <td>Actualización automática de stock y consulta de existencias.</td>
-    <td>
-        <a th:href="@{/inventario}">/inventario</a>
-    </td>
-</tr>
+                      <td>
+                        <span
+                          class="badge"
+                          th:classappend="${movimiento.tipoMovimiento == 'Ingreso'} ? ' success' : ' danger'"
+                          th:text="${movimiento.tipoMovimiento}"
+                        >
+                          Ingreso
+                        </span>
+                      </td>
 
-<tr>
-    <td>4</td>
-    <td>Despacho</td>
-    <td>Salida de productos hacia clientes y reducción automática del stock.</td>
-    <td>
-        <a th:href="@{/despacho}">/despacho</a>
-    </td>
-</tr>
+                      <td th:text="${movimiento.cantidad}">0</td>
 
-</tbody>
+                      <td th:text="${movimiento.usuario.nombre}">Usuario</td>
+                    </tr>
+                  </tbody>
                 </table>
+              </div>
             </div>
 
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Productos con stock crítico</h2>
+                <span>Requieren atención</span>
+              </div>
+
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Stock</th>
+                      <th>Mínimo</th>
+                      <th>Estado</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr
+                      th:if="${productosCriticos == null or #lists.isEmpty(productosCriticos)}"
+                    >
+                      <td colspan="4" class="empty">
+                        No hay productos con stock crítico actualmente.
+                      </td>
+                    </tr>
+
+                    <tr th:each="producto : ${productosCriticos}">
+                      <td th:text="${producto.nombre}">Producto</td>
+
+                      <td
+                        th:text="${producto.stockActual != null ? producto.stockActual : 0}"
+                      >
+                        0
+                      </td>
+
+                      <td
+                        th:text="${producto.stockMinimo != null ? producto.stockMinimo : 0}"
+                      >
+                        0
+                      </td>
+
+                      <td>
+                        <span
+                          class="badge danger"
+                          th:text="${producto.stockActual == null or producto.stockActual == 0 ? 'Sin stock' : 'Crítico'}"
+                        >
+                          Crítico
+                        </span>
+                      </td>
+                    </tr>
+                    <!-- Gráficos del dashboard con datos reales enviados desde Spring Boot -->
+                    <script th:inline="javascript">
+                      // ==============================
+                      // DATOS DESDE MYSQL / SPRING BOOT
+                      // ==============================
+
+                      const labelsEntradasSalidas =
+                        /*[[${graficoEntradasSalidasLabels}]]*/ [];
+                      const dataEntradas = /*[[${graficoEntradasData}]]*/ [];
+                      const dataSalidas = /*[[${graficoSalidasData}]]*/ [];
+
+                      const labelsEstado = /*[[${graficoEstadoLabels}]]*/ [];
+                      const dataEstado = /*[[${graficoEstadoData}]]*/ [];
+
+                      const labelsTopProductos =
+                        /*[[${graficoTopProductosLabels}]]*/ [];
+                      const dataTopProductos =
+                        /*[[${graficoTopProductosData}]]*/ [];
+
+                      const labelsTendencia =
+                        /*[[${graficoTendenciaLabels}]]*/ [];
+                      const dataTendencia = /*[[${graficoTendenciaData}]]*/ [];
+
+                      // ==============================
+                      // CONFIGURACIÓN GENERAL
+                      // ==============================
+
+                      Chart.defaults.font.family =
+                        "Arial, Helvetica, sans-serif";
+                      Chart.defaults.color = "#374151";
+
+                      // ==============================
+                      // GRÁFICO 1: ENTRADAS VS SALIDAS
+                      // ==============================
+
+                      new Chart(
+                        document.getElementById("chartEntradasSalidas"),
+                        {
+                          type: "bar",
+                          data: {
+                            labels: labelsEntradasSalidas,
+                            datasets: [
+                              {
+                                label: "Entradas",
+                                data: dataEntradas,
+                                backgroundColor: "#16a34a",
+                                borderRadius: 8,
+                              },
+                              {
+                                label: "Salidas",
+                                data: dataSalidas,
+                                backgroundColor: "#dc2626",
+                                borderRadius: 8,
+                              },
+                            ],
+                          },
+                          options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                              legend: {
+                                position: "bottom",
+                              },
+                            },
+                            scales: {
+                              y: {
+                                beginAtZero: true,
+                                ticks: {
+                                  precision: 0,
+                                },
+                              },
+                            },
+                          },
+                        },
+                      );
+
+                      // ==============================
+                      // GRÁFICO 2: ESTADO DEL INVENTARIO
+                      // ==============================
+
+                      new Chart(
+                        document.getElementById("chartEstadoInventario"),
+                        {
+                          type: "doughnut",
+                          data: {
+                            labels: labelsEstado,
+                            datasets: [
+                              {
+                                data: dataEstado,
+                                backgroundColor: [
+                                  "#2563eb",
+                                  "#f59e0b",
+                                  "#dc2626",
+                                ],
+                                borderWidth: 0,
+                              },
+                            ],
+                          },
+                          options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: "65%",
+                            plugins: {
+                              legend: {
+                                position: "bottom",
+                              },
+                            },
+                          },
+                        },
+                      );
+
+                      // ==============================
+                      // GRÁFICO 3: TOP 5 PRODUCTOS MÁS MOVIDOS
+                      // ==============================
+
+                      new Chart(document.getElementById("chartTopProductos"), {
+                        type: "bar",
+                        data: {
+                          labels: labelsTopProductos,
+                          datasets: [
+                            {
+                              label: "Cantidad movida",
+                              data: dataTopProductos,
+                              backgroundColor: "#0f62d6",
+                              borderRadius: 8,
+                            },
+                          ],
+                        },
+                        options: {
+                          indexAxis: "y",
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              display: false,
+                            },
+                          },
+                          scales: {
+                            x: {
+                              beginAtZero: true,
+                              ticks: {
+                                precision: 0,
+                              },
+                            },
+                          },
+                        },
+                      });
+
+                      // ==============================
+                      // GRÁFICO 4: TENDENCIA DE MOVIMIENTOS DEL MES
+                      // ==============================
+
+                      new Chart(document.getElementById("chartTendenciaMes"), {
+                        type: "line",
+                        data: {
+                          labels: labelsTendencia,
+                          datasets: [
+                            {
+                              label: "Movimientos",
+                              data: dataTendencia,
+                              borderColor: "#7c3aed",
+                              backgroundColor: "rgba(124, 58, 237, 0.15)",
+                              fill: true,
+                              tension: 0.35,
+                              pointRadius: 4,
+                              pointHoverRadius: 6,
+                            },
+                          ],
+                        },
+                        options: {
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              position: "bottom",
+                            },
+                          },
+                          scales: {
+                            y: {
+                              beginAtZero: true,
+                              ticks: {
+                                precision: 0,
+                              },
+                            },
+                          },
+                        },
+                      });
+                    </script>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </section>
-
-    </main>
-
-</div>
-
-</body>
+      </main>
+    </div>
+  </body>
 </html>

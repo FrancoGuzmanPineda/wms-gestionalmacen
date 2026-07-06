@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wms.gestionalmaceng01.models.Usuario;
 import com.wms.gestionalmaceng01.repository.UsuarioRepository;
+import com.wms.gestionalmaceng01.services.DashboardService;
 
 @Controller
 public class AuthController {
@@ -32,10 +33,15 @@ public class AuthController {
 
     private final UsuarioRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DashboardService dashboardService;
 
-    public AuthController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(
+            UsuarioRepository usuarioRepository,
+            PasswordEncoder passwordEncoder,
+            DashboardService dashboardService) {
         this.userRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.dashboardService = dashboardService;
     }
 
     @GetMapping("/login")
@@ -65,9 +71,11 @@ public class AuthController {
             log.info("Usuario autenticado: {} - Rol: {}", correo, rol);
 
             if ("ADMIN".equals(rol) || "SUPERVISOR".equals(rol)) {
+                // Carga datos reales de MySQL para el dashboard.
+                cargarDatosDashboard(model);
                 return DASHBOARD_ADMIN;
-         }
-     }
+            }
+        }
         return "redirect:/login";
     }
 
@@ -128,7 +136,7 @@ public class AuthController {
     @PostMapping("/api/crear-usuario")
     @ResponseBody
     public ResponseEntity<Map<String, String>> crearUsuario(@RequestBody Map<String, String> datos) {
-        
+
         Map<String, String> respuesta = new HashMap<>();
 
         String nombre = datos.get("nombre");
@@ -173,5 +181,24 @@ public class AuthController {
 
         respuesta.put("mensaje", "Usuario creado exitosamente");
         return ResponseEntity.ok(respuesta);
+    }
+
+    // Agrega al modelo los datos reales que se mostrarán en el dashboard.
+    private void cargarDatosDashboard(Model model) {
+
+        model.addAllAttributes(
+                dashboardService.obtenerIndicadores());
+
+        model.addAttribute(
+                "ultimosMovimientos",
+                dashboardService.obtenerUltimosMovimientos());
+
+        model.addAttribute(
+                "productosCriticos",
+                dashboardService.obtenerProductosCriticos());
+
+        model.addAllAttributes(
+        dashboardService.obtenerDatosGraficos()
+);        
     }
 }

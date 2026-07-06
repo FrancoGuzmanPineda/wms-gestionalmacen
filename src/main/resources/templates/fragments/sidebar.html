@@ -29,11 +29,7 @@
                th:classappend="${seccionActiva == 'despacho'} ? 'active' : ''">
                 Despachos
             </a>
-
-            <a th:href="@{/reportes}"
-               th:classappend="${seccionActiva == 'reportes'} ? 'active' : ''">
-                Reportes
-            </a>
+            
 
             <a th:if="${rol == 'ADMIN'}"
                th:href="@{/usuarios}"

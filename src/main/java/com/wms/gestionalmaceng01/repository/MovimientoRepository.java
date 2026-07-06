@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.time.LocalDateTime;
+import org.springframework.data.repository.query.Param;
 
 public interface MovimientoRepository extends JpaRepository<Movimiento, Integer> {
 
@@ -41,4 +43,28 @@ List<Movimiento> buscarSalidasPorFecha(
         LocalDate fin
 );
 
+    // Suma la cantidad de entradas o salidas dentro de un rango de fechas.
+    // Se usará para los KPIs: Entradas del día y Salidas del día.
+    @Query("""
+    SELECT COALESCE(SUM(m.cantidad), 0)
+    FROM Movimiento m
+    WHERE m.tipoMovimiento = :tipoMovimiento
+    AND m.estado = 'Completado'
+    AND m.fecha >= :inicio
+    AND m.fecha < :fin
+    """)
+    Long sumarCantidadPorTipoEntreFechas(
+            @Param("tipoMovimiento") String tipoMovimiento,
+            @Param("inicio") LocalDateTime inicio,
+            @Param("fin") LocalDateTime fin
+    );
+
+    // Obtiene los 10 últimos movimientos completados del almacén.
+    // Se usará para graficos del dashboard.
+    List<Movimiento> findTop10ByEstadoOrderByFechaDesc(String estado);
+    List<Movimiento> findByEstadoAndFechaBetweenOrderByFechaAsc(
+        String estado,
+        LocalDateTime inicio,
+        LocalDateTime fin
+);
 }
