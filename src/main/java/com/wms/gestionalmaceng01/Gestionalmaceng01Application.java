@@ -20,7 +20,11 @@ public class Gestionalmaceng01Application {
         SpringApplication.run(Gestionalmaceng01Application.class, args);
     }
 
-
+    /**
+     * Abre la pantalla de inicio de sesión cuando Spring Boot termina de iniciar.
+     * Si el sistema operativo no permite abrir el navegador, la aplicación sigue
+     * ejecutándose y se muestra la dirección en la consola.
+     */
     @EventListener(ApplicationReadyEvent.class)
     public void abrirNavegador() {
         logger.info("Servidor iniciado en: {}", APPLICATION_URL);
