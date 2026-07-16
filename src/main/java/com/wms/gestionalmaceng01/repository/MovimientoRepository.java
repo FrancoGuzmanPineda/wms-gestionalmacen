@@ -15,6 +15,8 @@ public interface MovimientoRepository extends JpaRepository<Movimiento, Integer>
 
     List<Movimiento> findByTipoMovimientoOrderByFechaDesc(String tipoMovimiento);
 
+    List<Movimiento> findTop10ByTipoMovimientoOrderByFechaDesc(String tipoMovimiento);
+
     List<Movimiento> findByProductoIdProducto(Integer idProducto);
 
     @Query("""

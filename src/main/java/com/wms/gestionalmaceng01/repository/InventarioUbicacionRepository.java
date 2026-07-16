@@ -55,6 +55,17 @@ public interface InventarioUbicacionRepository
     );
 
     @Query("""
+        SELECT inventario.cantidad
+        FROM InventarioUbicacion inventario
+        WHERE inventario.producto.idProducto = :idProducto
+          AND inventario.ubicacion.idUbicacion = :idUbicacion
+        """)
+    Optional<Integer> buscarCantidadPorProductoYUbicacion(
+            @Param("idProducto") Integer idProducto,
+            @Param("idUbicacion") Integer idUbicacion
+    );
+
+    @Query("""
         SELECT COALESCE(SUM(inventario.cantidad), 0)
         FROM InventarioUbicacion inventario
         WHERE inventario.producto.idProducto = :idProducto

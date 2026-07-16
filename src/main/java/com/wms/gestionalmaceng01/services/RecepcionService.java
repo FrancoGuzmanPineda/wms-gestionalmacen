@@ -55,6 +55,24 @@ public class RecepcionService {
             Integer cantidad,
             String observacion
     ) {
+        if (idProducto == null) {
+            throw new IllegalArgumentException(
+                    "Debe seleccionar un producto."
+            );
+        }
+
+        if (idUbicacion == null) {
+            throw new IllegalArgumentException(
+                    "Debe seleccionar una ubicación."
+            );
+        }
+
+        if (correoUsuario == null || correoUsuario.isBlank()) {
+            throw new IllegalArgumentException(
+                    "No se pudo identificar al usuario autenticado."
+            );
+        }
+
         if (cantidad == null || cantidad <= 0) {
             throw new IllegalArgumentException(
                     "La cantidad debe ser mayor a cero."
@@ -130,7 +148,7 @@ public class RecepcionService {
         movimiento.setTipoMovimiento("Ingreso");
         movimiento.setCantidad(cantidad);
         movimiento.setFecha(LocalDateTime.now());
-        movimiento.setObservacion(limitarObservacion(observacion));
+        movimiento.setObservacion(validarYNormalizarObservacion(observacion));
         movimiento.setEstado("Completado");
 
         return movimientoRepository.save(movimiento);
@@ -141,19 +159,28 @@ public class RecepcionService {
                 .findByTipoMovimientoOrderByFechaDesc("Ingreso");
     }
 
+    public List<Movimiento> listarUltimosMovimientosIngreso() {
+        return movimientoRepository
+                .findTop10ByTipoMovimientoOrderByFechaDesc("Ingreso");
+    }
+
     public List<Movimiento> listarTodosLosMovimientos() {
         return movimientoRepository.findAll();
     }
 
-    private String limitarObservacion(String observacion) {
+    private String validarYNormalizarObservacion(String observacion) {
         if (observacion == null || observacion.isBlank()) {
             return null;
         }
 
         String texto = observacion.trim();
 
-        return texto.length() <= 255
-                ? texto
-                : texto.substring(0, 255);
+        if (texto.length() > 255) {
+            throw new IllegalArgumentException(
+                    "La observación no puede superar los 255 caracteres."
+            );
+        }
+
+        return texto;
     }
 }
