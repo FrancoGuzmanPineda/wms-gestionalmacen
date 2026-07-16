@@ -1,7 +1,12 @@
 package com.wms.gestionalmaceng01.services;
 
+
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +35,11 @@ public class DespachoService {
     private final TipoMovimientoRepository tipoMovimientoRepository;
     private final InventarioUbicacionService inventarioUbicacionService;
 
+    private static final DateTimeFormatter FORMATO_GUIA =
+            DateTimeFormatter.ofPattern("yyyyMMdd");
+
+    private static final Random RANDOM = new Random();
+
     public DespachoService(
             DespachoRepository despachoRepository,
             MovimientoRepository movimientoRepository,
@@ -39,6 +49,7 @@ public class DespachoService {
             TipoMovimientoRepository tipoMovimientoRepository,
             InventarioUbicacionService inventarioUbicacionService
     ) {
+
         this.despachoRepository = despachoRepository;
         this.movimientoRepository = movimientoRepository;
         this.productoRepository = productoRepository;
@@ -46,12 +57,65 @@ public class DespachoService {
         this.usuarioRepository = usuarioRepository;
         this.tipoMovimientoRepository = tipoMovimientoRepository;
         this.inventarioUbicacionService = inventarioUbicacionService;
+
     }
 
-    public List<Despacho> listar() {
-        return despachoRepository.findAll();
+  
+
+    public Optional<Despacho> buscar(Integer id) {
+        return despachoRepository.findById(id);
     }
 
+    @Transactional
+    public void eliminar(Integer id){
+
+    Despacho despacho = despachoRepository.findById(id)
+            .orElseThrow(() ->
+                    new IllegalArgumentException("Despacho no existe"));
+
+    despachoRepository.delete(despacho);
+
+}
+    @Transactional
+        public Despacho actualizar(Integer id, Despacho nuevo){
+
+        Despacho despacho = despachoRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Despacho no encontrado"));
+
+        despacho.setEmpresaDestino(nuevo.getEmpresaDestino());
+        despacho.setConductor(nuevo.getConductor());
+        despacho.setPlacaVehiculo(nuevo.getPlacaVehiculo());
+        despacho.setGuiaRemision(nuevo.getGuiaRemision());
+        despacho.setFechaSalida(nuevo.getFechaSalida());
+        despacho.setFechaLlegada(nuevo.getFechaLlegada());
+        despacho.setObservaciones(nuevo.getObservaciones());
+        despacho.setEstado(nuevo.getEstado());
+
+        return despachoRepository.save(despacho);
+
+        }
+    private String generarGuiaRemision() {
+
+    String guia;
+
+    do {
+
+        String fecha = LocalDateTime.now().format(FORMATO_GUIA);
+
+        int numero = 100000 + RANDOM.nextInt(900000);
+
+        guia = "GR-" + fecha + "-" + numero;
+
+    } while (despachoRepository.findByGuiaRemision(guia).isPresent());
+
+    return guia;
+        }
+   public String nuevaGuia(){
+
+    return generarGuiaRemision();
+
+}
     @Transactional
     public Despacho registrarDespacho(
             Integer idProducto,
@@ -117,13 +181,23 @@ public class DespachoService {
                 cantidad
         );
 
-        LocalDateTime fechaOperacion = LocalDateTime.now();
+      LocalDateTime fechaOperacion = LocalDateTime.now();
 
         despacho.setProducto(producto);
         despacho.setUbicacion(ubicacion);
         despacho.setUsuario(usuario);
+        despacho.setEstado("Pendiente");
+
+        if (despacho.getFechaSalida() == null) {
         despacho.setFechaSalida(fechaOperacion);
-        despacho.setEstado("Completado");
+        }
+
+        if (despacho.getGuiaRemision() == null
+                || despacho.getGuiaRemision().isBlank()) {
+        despacho.setGuiaRemision(generarGuiaRemision());
+        }
+
+        despacho.setFechaRegistro(fechaOperacion);
 
         Despacho despachoGuardado = despachoRepository.save(despacho);
 
@@ -171,4 +245,31 @@ public class DespachoService {
                 ? resultado
                 : resultado.substring(0, 255);
     }
+    public Despacho buscarPorId(Integer id){
+
+    return despachoRepository.findById(id)
+            .orElseThrow(() ->
+                    new IllegalArgumentException("Despacho no encontrado"));
+
+}
+        
+public boolean esAdministrador(Usuario usuario){
+
+    return usuario.getRol()!=null &&
+            usuario.getRol().equalsIgnoreCase("ADMIN");
+
+}
+public Usuario obtenerUsuario(String correo){
+
+    return usuarioRepository.findByCorreo(correo)
+            .orElseThrow(() ->
+                    new IllegalArgumentException("Usuario no encontrado"));
+
+}
+public List<Despacho> obtenerDespachos(){
+
+    return despachoRepository
+            .findAllByOrderByFechaRegistroDesc();
+
+}
 }

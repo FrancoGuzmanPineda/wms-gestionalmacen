@@ -146,3 +146,97 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cargarUbicacionesDelProducto();
 });
+
+/* ===========================================================
+   GENERAR GUÍA DE REMISIÓN ALEATORIA
+=========================================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const btnGenerarGuia = document.getElementById("btnGenerarGuia");
+    const guiaRemisionInput = document.getElementById("guiaRemision");
+
+    if (!btnGenerarGuia || !guiaRemisionInput) return;
+
+    btnGenerarGuia.addEventListener("click", () => {
+        const numero = Math.floor(100000 + Math.random() * 900000);
+        guiaRemisionInput.value = `GR-${numero}`;
+    });
+
+});
+
+/* ===========================================================
+   MODAL EDITAR DESPACHO
+=========================================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const modal = document.getElementById("modalEditar");
+
+    if (!modal) return;
+
+    const cerrar = document.getElementById("cerrarModal");
+
+    const formulario = document.getElementById("formEditar");
+
+    const guia = document.getElementById("editGuia");
+    const empresa = document.getElementById("editEmpresa");
+    const conductor = document.getElementById("editConductor");
+    const placa = document.getElementById("editPlaca");
+    const salida = document.getElementById("editSalida");
+    const llegada = document.getElementById("editLlegada");
+    const estado = document.getElementById("editEstado");
+    const observacion = document.getElementById("editObservacion");
+
+    function convertirFecha(fecha){
+
+        if(!fecha) return "";
+
+        return fecha.substring(0,16);
+
+    }
+
+    document.querySelectorAll(".btnEditar").forEach(btn=>{
+
+        btn.addEventListener("click",async()=>{
+
+            const id=btn.dataset.id;
+
+            const res=await fetch("/despacho/buscar/"+id);
+
+            const d=await res.json();
+
+            formulario.action="/despacho/editar/"+id;
+
+            guia.value=d.guiaRemision||"";
+            empresa.value=d.empresaDestino||"";
+            conductor.value=d.conductor||"";
+            placa.value=d.placaVehiculo||"";
+            salida.value=convertirFecha(d.fechaSalida);
+            llegada.value=convertirFecha(d.fechaLlegada);
+            estado.value=d.estado;
+            observacion.value=d.observaciones||"";
+
+            modal.style.display="flex";
+
+        });
+
+    });
+
+    cerrar.onclick=function(){
+
+        modal.style.display="none";
+
+    }
+
+    window.onclick=function(e){
+
+        if(e.target===modal){
+
+            modal.style.display="none";
+
+        }
+
+    }
+
+});

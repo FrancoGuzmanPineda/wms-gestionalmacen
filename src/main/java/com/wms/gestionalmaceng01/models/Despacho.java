@@ -2,6 +2,7 @@ package com.wms.gestionalmaceng01.models;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,20 +27,34 @@ public class Despacho {
     @JoinColumn(name = "id_ubicacion", nullable = false)
     private Ubicacion ubicacion;
 
+    @Column(name = "cantidad")
     private Integer cantidad;
 
+    @Column(name = "fecha_salida")
     private LocalDateTime fechaSalida;
 
+    @Column(name = "fecha_llegada")
+    private LocalDateTime fechaLlegada;
+
+    @Column(name = "fecha_registro")
+    private LocalDateTime fechaRegistro;
+
+    @Column(name = "empresa_destino")
     private String empresaDestino;
 
+    @Column(name = "conductor")
     private String conductor;
 
+    @Column(name = "placa_vehiculo")
     private String placaVehiculo;
 
+    @Column(name = "guia_remision")
     private String guiaRemision;
 
+    @Column(name = "observaciones")
     private String observaciones;
 
+    @Column(name = "estado")
     private String estado;
 
     @ManyToOne
@@ -48,7 +63,8 @@ public class Despacho {
 
     public Despacho() {
         this.fechaSalida = LocalDateTime.now();
-        this.estado = "Completado";
+        this.fechaRegistro = LocalDateTime.now();
+        this.estado = "Pendiente";
     }
 
     public Integer getIdDespacho() {
@@ -89,6 +105,22 @@ public class Despacho {
 
     public void setFechaSalida(LocalDateTime fechaSalida) {
         this.fechaSalida = fechaSalida;
+    }
+
+    public LocalDateTime getFechaLlegada() {
+        return fechaLlegada;
+    }
+
+    public void setFechaLlegada(LocalDateTime fechaLlegada) {
+        this.fechaLlegada = fechaLlegada;
+    }
+
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
     }
 
     public String getEmpresaDestino() {

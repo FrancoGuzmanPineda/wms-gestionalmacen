@@ -1,6 +1,7 @@
 package com.wms.gestionalmaceng01.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,13 +50,43 @@ public class DespachoController {
 
     @GetMapping
     public String mostrarFormulario(Model model, Authentication auth) {
+
         if (auth == null || !auth.isAuthenticated()) {
             return "redirect:/login";
         }
 
         agregarDatosUsuario(model, auth);
+
+        Usuario usuario = despachoService.obtenerUsuario(auth.getName());
+
         model.addAttribute("productos", productoService.listarActivos());
         model.addAttribute("despacho", new Despacho());
+
+        model.addAttribute("historial",
+                despachoService.obtenerDespachos());
+
+        model.addAttribute("esAdmin",
+                despachoService.esAdministrador(usuario));
+
+        model.addAttribute("empresas", Arrays.asList(
+                "Tipo Negocio Autorizado - Lima Comas",
+                "Tipo Negocio Autorizado - Lima Ate",
+                "Tipo Negocio Autorizado - Lima Surco",
+                "Tipo Negocio Autorizado - Callao",
+                "Tipo Negocio Autorizado - Independencia"
+        ));
+
+        model.addAttribute("conductores", Arrays.asList(
+                "Jose Colocho",
+                "Carlos Ramos",
+                "Luis Medina"
+        ));
+
+        model.addAttribute("placas", Arrays.asList(
+                "ABC-123",
+                "BFG-458",
+                "CDE-951"
+        ));
 
         return "despacho/despacho";
     }
@@ -83,6 +114,14 @@ public class DespachoController {
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.noStore())
                 .body(respuesta);
+    }
+
+    @GetMapping("/nueva-guia")
+    @ResponseBody
+    public String nuevaGuia(){
+
+        return despachoService.nuevaGuia();
+
     }
 
     @PostMapping("/guardar")
@@ -118,6 +157,70 @@ public class DespachoController {
         }
 
         return "redirect:/despacho";
+    }
+
+    @PostMapping("/editar/{id}")
+    public String editar(
+
+            @PathVariable Integer id,
+            @ModelAttribute Despacho despacho,
+            RedirectAttributes redirect
+
+    ){
+
+        despachoService.actualizar(id, despacho);
+
+        redirect.addFlashAttribute(
+                "mensajeExito",
+                "Despacho actualizado correctamente."
+        );
+
+        return "redirect:/despacho";
+    }
+
+    @PostMapping("/eliminar/{id}")
+    public String eliminar(
+
+            @PathVariable Integer id,
+            Authentication auth,
+            RedirectAttributes redirect
+
+    ){
+
+        Usuario usuario =
+                despachoService.obtenerUsuario(auth.getName());
+
+        if(!despachoService.esAdministrador(usuario)){
+
+            redirect.addFlashAttribute(
+                    "mensajeError",
+                    "No tiene permisos."
+            );
+
+            return "redirect:/despacho";
+        }
+
+        despachoService.eliminar(id);
+
+        redirect.addFlashAttribute(
+                "mensajeExito",
+                "Despacho eliminado."
+        );
+
+        return "redirect:/despacho";
+
+    }
+
+    @GetMapping("/buscar/{id}")
+    @ResponseBody
+    public Despacho buscar(
+
+            @PathVariable Integer id
+
+    ){
+
+        return despachoService.buscarPorId(id);
+
     }
 
     private void agregarDatosUsuario(

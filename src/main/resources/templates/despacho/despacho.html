@@ -138,19 +138,38 @@
                                 Empresa Destino
                             </label>
 
-                            <input id="empresaDestino"
-                                   type="text"
-                                   name="empresaDestino"
-                                   placeholder="Ej. Empresa cliente">
+                            <select id="empresaDestino"
+                                    name="empresaDestino"
+                                    required>
+
+                                <option value="">
+                                    Seleccione empresa
+                                </option>
+
+                                <option th:each="e : ${empresas}"
+                                        th:value="${e}"
+                                        th:text="${e}">
+                                </option>
+
+                            </select>
                         </div>
 
                         <div>
                             <label for="conductor">Conductor</label>
 
-                            <input id="conductor"
-                                   type="text"
-                                   name="conductor"
-                                   placeholder="Nombre del conductor">
+                            <select id="conductor"
+                                    name="conductor">
+
+                                <option value="">
+                                    Seleccione conductor
+                                </option>
+
+                                <option th:each="c : ${conductores}"
+                                        th:value="${c}"
+                                        th:text="${c}">
+                                </option>
+
+                            </select>
                         </div>
 
                         <div>
@@ -158,10 +177,19 @@
                                 Placa Vehículo
                             </label>
 
-                            <input id="placaVehiculo"
-                                   type="text"
-                                   name="placaVehiculo"
-                                   placeholder="ABC-123">
+                            <select id="placaVehiculo"
+                                    name="placaVehiculo">
+
+                                <option value="">
+                                    Seleccione placa
+                                </option>
+
+                                <option th:each="p : ${placas}"
+                                        th:value="${p}"
+                                        th:text="${p}">
+                                </option>
+
+                            </select>
                         </div>
 
                         <div>
@@ -169,10 +197,39 @@
                                 Guía de Remisión
                             </label>
 
-                            <input id="guiaRemision"
-                                   type="text"
-                                   name="guiaRemision"
-                                   placeholder="GR-000001">
+                            <div style="display:flex; gap:8px;">
+                                <input id="guiaRemision"
+                                       type="text"
+                                       name="guiaRemision"
+                                       placeholder="GR-000001"
+                                       style="flex:1;">
+
+                                <button id="btnGenerarGuia"
+                                        type="button"
+                                        class="btn secondary">
+                                    Generar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="fechaSalida">
+                                Fecha de Salida
+                            </label>
+
+                            <input id="fechaSalida"
+                                   type="datetime-local"
+                                   name="fechaSalida">
+                        </div>
+
+                        <div>
+                            <label for="fechaLlegada">
+                                Fecha de Llegada
+                            </label>
+
+                            <input id="fechaLlegada"
+                                   type="datetime-local"
+                                   name="fechaLlegada">
                         </div>
 
                         <div class="full-width">
@@ -199,48 +256,271 @@
                 </form>
             </div>
 
+            <!-- ===================== -->
+            <!-- HISTORIAL DESPACHOS -->
+            <!-- ===================== -->
+
             <div class="card">
-                <h2>Lógica aplicada</h2>
+
+                <h2>Historial de Despachos</h2>
 
                 <table>
+
                     <thead>
+
                     <tr>
-                        <th>Paso</th>
-                        <th>Acción</th>
-                        <th>Descripción</th>
+
+                        <th>Guía</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Empresa</th>
+                        <th>Conductor</th>
+                        <th>Salida</th>
+                        <th>Llegada</th>
+                        <th>Estado</th>
+                        <th>Registrado por</th>
+                        <th>Registrado</th>
+
+                        <th th:if="${esAdmin}">
+                            Acciones
+                        </th>
+
                     </tr>
+
                     </thead>
 
                     <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Seleccionar producto</td>
-                        <td>Se consulta en qué ubicaciones existe stock.</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Seleccionar ubicación</td>
-                        <td>Se muestra la cantidad disponible en esa ubicación.</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Validar cantidad</td>
-                        <td>El sistema impide retirar más unidades de las disponibles.</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Actualizar inventario</td>
+
+                    <tr th:each="d : ${historial}">
+
+                        <td th:text="${d.guiaRemision}"></td>
+
+                        <td th:text="${d.producto.nombre}"></td>
+
+                        <td th:text="${d.cantidad}"></td>
+
+                        <td th:text="${d.empresaDestino}"></td>
+
+                        <td th:text="${d.conductor}"></td>
+
+                        <td th:text="${#temporals.format(d.fechaSalida,'dd/MM/yyyy HH:mm')}"></td>
+
                         <td>
-                            Se descuenta la ubicación y se recalcula el stock total
-                            del producto.
+
+                            <span
+                                    th:if="${d.fechaLlegada!=null}"
+                                    th:text="${#temporals.format(d.fechaLlegada,'dd/MM/yyyy HH:mm')}">
+                            </span>
+
+                            <span
+                                    th:unless="${d.fechaLlegada!=null}">
+                                Pendiente
+                            </span>
+
                         </td>
+
+                        <td>
+
+                            <span
+                                    class="badge"
+
+                                    th:classappend="${d.estado=='Entregado'}?
+                                    ' success':
+                                    (${d.estado=='En Ruta'}?
+                                    ' warning':
+                                    (${d.estado=='Cancelado'}?
+                                    ' danger':
+                                    ' secondary'))"
+
+                                    th:text="${d.estado}">
+                            </span>
+
+                        </td>
+
+                        <td th:text="${d.usuario.nombre}"></td>
+
+                        <td th:text="${#temporals.format(d.fechaRegistro,'dd/MM/yyyy HH:mm')}"></td>
+
+                        <td th:if="${esAdmin}">
+
+                            <button
+                                    type="button"
+                                    class="btn secondary btnEditar"
+
+                                    th:data-id="${d.idDespacho}">
+                                Editar
+                            </button>
+
+                            <form
+                                    th:action="@{/despacho/eliminar/{id}(id=${d.idDespacho})}"
+                                    method="post"
+                                    style="display:inline;">
+
+                                <button
+                                        class="btn danger"
+
+                                        onclick="return confirm('¿Eliminar despacho?')">
+
+                                    Eliminar
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
                     </tr>
+
                     </tbody>
+
                 </table>
+
             </div>
 
         </section>
     </main>
+</div>
+
+<!-- ========================================================= -->
+<!-- MODAL EDITAR DESPACHO -->
+<!-- ========================================================= -->
+
+<div id="modalEditar" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>Editar Despacho</h2>
+
+            <span
+                    class="cerrar"
+                    id="cerrarModal">
+
+                &times;
+
+            </span>
+
+        </div>
+
+        <form
+                id="formEditar"
+                method="post">
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label>Guía Remisión</label>
+
+                    <input
+                            id="editGuia"
+                            name="guiaRemision"
+                            readonly>
+
+                </div>
+
+                <div>
+
+                    <label>Empresa Destino</label>
+
+                    <input
+                            id="editEmpresa"
+                            name="empresaDestino"
+                            required>
+
+                </div>
+
+                <div>
+
+                    <label>Conductor</label>
+
+                    <input
+                            id="editConductor"
+                            name="conductor">
+
+                </div>
+
+                <div>
+
+                    <label>Placa</label>
+
+                    <input
+                            id="editPlaca"
+                            name="placaVehiculo">
+
+                </div>
+
+                <div>
+
+                    <label>Fecha Salida</label>
+
+                    <input
+                            id="editSalida"
+                            type="datetime-local"
+                            name="fechaSalida">
+
+                </div>
+
+                <div>
+
+                    <label>Fecha Llegada</label>
+
+                    <input
+                            id="editLlegada"
+                            type="datetime-local"
+                            name="fechaLlegada">
+
+                </div>
+
+                <div>
+
+                    <label>Estado</label>
+
+                    <select
+                            id="editEstado"
+                            name="estado">
+
+                        <option>Pendiente</option>
+
+                        <option>En Ruta</option>
+
+                        <option>Entregado</option>
+
+                        <option>Cancelado</option>
+
+                    </select>
+
+                </div>
+
+                <div class="full-width">
+
+                    <label>Observaciones</label>
+
+                    <textarea
+                            id="editObservacion"
+                            rows="4"
+                            name="observaciones">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <button
+                    class="btn primary">
+
+                Guardar Cambios
+
+            </button>
+
+        </form>
+
+    </div>
+
 </div>
 
 </body>
