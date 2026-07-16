@@ -1,4 +1,4 @@
-ñdocument.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const eliminarModal = document.getElementById('eliminarModal');
     
     eliminarModal.addEventListener('show.bs.modal', function(event) {

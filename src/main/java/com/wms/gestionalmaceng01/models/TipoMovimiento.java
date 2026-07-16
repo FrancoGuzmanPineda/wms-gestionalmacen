@@ -3,7 +3,7 @@ package com.wms.gestionalmaceng01.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Tipos_Movimiento")
+@Table(name = "tipos_movimiento")
 public class TipoMovimiento {
 
     @Id

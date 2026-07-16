@@ -27,8 +27,6 @@ public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     private static final String DASHBOARD_ADMIN = "dashboardadmin";
-    private static final String DASHBOARD_EMPLEADO = "dashboardempleado";
-    private static final String DASHBOARD_USER = "dashboardusuario";
     private static final String ERROR_KEY = "error";
 
     private final UsuarioRepository userRepository;

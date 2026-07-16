@@ -3,7 +3,7 @@ package com.wms.gestionalmaceng01.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Tipos")
+@Table(name = "tipos")
 public class Tipo {
 
     @Id

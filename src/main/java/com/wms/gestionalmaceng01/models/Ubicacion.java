@@ -3,7 +3,7 @@ package com.wms.gestionalmaceng01.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Ubicaciones")
+@Table(name = "ubicaciones")
 public class Ubicacion {
 
     @Id
