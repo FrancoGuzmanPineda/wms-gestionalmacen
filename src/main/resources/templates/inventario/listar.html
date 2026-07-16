@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Inventario - WMS</title>
+    <title>Inventario por ubicación - WMS</title>
     <link rel="stylesheet" th:href="@{/css/inventario.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 </head>
@@ -15,7 +15,7 @@
     <main class="main">
 
         <header class="topbar">
-            <h3>Control de Inventario</h3>
+            <h3>Inventario por ubicación</h3>
 
             <span>
                 <strong th:text="${nombre}">Usuario</strong>
@@ -28,8 +28,8 @@
 
             <div class="page-header">
                 <div>
-                    <h1>Inventario</h1>
-                    <p>Gestión de productos y existencias del almacén</p>
+                    <h1>Inventario por ubicación</h1>
+                    <p>Consulta y control de existencias distribuidas por ubicación</p>
                 </div>
 
                 <div class="buttons">
@@ -41,8 +41,8 @@
 
             <!-- SUBCATEGORÍAS DEL MÓDULO INVENTARIO -->
             <div class="tabs" aria-label="Subcategorías de Inventario">
-                <a th:href="@{/inventario}" class="active">Existencias</a>
-                <a th:href="@{/productos}">Productos</a>
+                <a th:href="@{/inventario}" class="active">Inventario por ubicación</a>
+                <a th:href="@{/productos}">Gestión de productos</a>
             </div>
 
             <form class="filters" method="get" th:action="@{/inventario}">

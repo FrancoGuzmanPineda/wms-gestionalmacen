@@ -31,8 +31,7 @@ public class Gestionalmaceng01Application {
         String loginUrl = normalizarBaseUrl(baseUrl) + "/login";
         logger.info("Servidor iniciado en: {}", loginUrl);
 
-        // Durante las pruebas automáticas esta opción se desactiva para evitar
-        // abrir ventanas o ejecutar comandos del sistema operativo.
+        // Durante las pruebas automáticas esta opción se desactiva para evitar abrir ventanas o ejecutar comandos del sistema operativo.
         if (!aperturaAutomaticaHabilitada) {
             logger.info("Apertura automática del navegador deshabilitada para este entorno.");
             return;
