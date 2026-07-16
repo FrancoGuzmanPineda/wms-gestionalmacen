@@ -28,6 +28,7 @@ public class DespachoService {
     private final UbicacionRepository ubicacionRepository;
     private final UsuarioRepository usuarioRepository;
     private final TipoMovimientoRepository tipoMovimientoRepository;
+    private final InventarioUbicacionService inventarioUbicacionService;
 
     public DespachoService(
             DespachoRepository despachoRepository,
@@ -35,7 +36,8 @@ public class DespachoService {
             ProductoRepository productoRepository,
             UbicacionRepository ubicacionRepository,
             UsuarioRepository usuarioRepository,
-            TipoMovimientoRepository tipoMovimientoRepository
+            TipoMovimientoRepository tipoMovimientoRepository,
+            InventarioUbicacionService inventarioUbicacionService
     ) {
         this.despachoRepository = despachoRepository;
         this.movimientoRepository = movimientoRepository;
@@ -43,6 +45,7 @@ public class DespachoService {
         this.ubicacionRepository = ubicacionRepository;
         this.usuarioRepository = usuarioRepository;
         this.tipoMovimientoRepository = tipoMovimientoRepository;
+        this.inventarioUbicacionService = inventarioUbicacionService;
     }
 
     public List<Despacho> listar() {
@@ -59,44 +62,60 @@ public class DespachoService {
         Integer cantidad = despacho.getCantidad();
 
         if (cantidad == null || cantidad <= 0) {
-            throw new IllegalArgumentException("La cantidad debe ser mayor a cero");
+            throw new IllegalArgumentException(
+                    "La cantidad debe ser mayor a cero."
+            );
         }
 
-        Producto producto = productoRepository.findById(idProducto)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+        Producto producto = productoRepository.buscarPorIdParaActualizar(idProducto)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Producto no encontrado."
+                ));
 
         if (!"Activo".equalsIgnoreCase(producto.getEstado())) {
-            throw new IllegalArgumentException("El producto seleccionado está inactivo");
+            throw new IllegalArgumentException(
+                    "El producto seleccionado está inactivo."
+            );
         }
 
         Ubicacion ubicacion = ubicacionRepository.findById(idUbicacion)
-                .orElseThrow(() -> new IllegalArgumentException("Ubicación no encontrada"));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Ubicación no encontrada."
+                ));
 
         if (!"Activo".equalsIgnoreCase(ubicacion.getEstado())) {
-            throw new IllegalArgumentException("La ubicación seleccionada está inactiva");
+            throw new IllegalArgumentException(
+                    "La ubicación seleccionada está inactiva."
+            );
         }
 
         Usuario usuario = usuarioRepository.findByCorreo(correoUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario autenticado no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Usuario autenticado no encontrado."
+                ));
 
         if (!usuario.isEstado()) {
-            throw new IllegalArgumentException("El usuario autenticado está inactivo");
+            throw new IllegalArgumentException(
+                    "El usuario autenticado está inactivo."
+            );
         }
 
         TipoMovimiento tipoSalida = tipoMovimientoRepository
                 .findByNombreTipoMovimiento("Salida")
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "No existe el tipo de movimiento Salida"));
+                        "No existe el tipo de movimiento Salida."
+                ));
 
-        int stockActual = producto.getStockActual() == null ? 0 : producto.getStockActual();
-
-        if (stockActual < cantidad) {
-            throw new IllegalArgumentException(
-                    "Stock insuficiente. Disponible: " + stockActual);
-        }
-
-        producto.setStockActual(stockActual - cantidad);
-        productoRepository.save(producto);
+        /*
+         * La salida se valida contra la ubicación seleccionada, no solamente
+         * contra el stock total del producto. Si no hay suficientes unidades
+         * en esa ubicación, la operación se rechaza.
+         */
+        inventarioUbicacionService.disminuirStock(
+                producto,
+                ubicacion,
+                cantidad
+        );
 
         LocalDateTime fechaOperacion = LocalDateTime.now();
 
@@ -125,7 +144,9 @@ public class DespachoService {
     }
 
     private String construirObservacion(Despacho despacho) {
-        StringBuilder observacion = new StringBuilder("Despacho registrado");
+        StringBuilder observacion = new StringBuilder(
+                "Despacho registrado"
+        );
 
         if (despacho.getEmpresaDestino() != null
                 && !despacho.getEmpresaDestino().isBlank()) {

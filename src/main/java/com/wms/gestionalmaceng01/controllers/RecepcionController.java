@@ -111,7 +111,7 @@ public class RecepcionController {
 
             redirectAttributes.addFlashAttribute(
                     "mensajeExito",
-                    "La recepción fue registrada correctamente."
+                    "La recepción fue registrada y el stock de la ubicación fue actualizado correctamente."
             );
 
         } catch (IllegalArgumentException e) {

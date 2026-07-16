@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wms.gestionalmaceng01.models.Usuario;
@@ -27,8 +26,6 @@ public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     private static final String DASHBOARD_ADMIN = "dashboardadmin";
-    private static final String DASHBOARD_EMPLEADO = "dashboardempleado";
-    private static final String DASHBOARD_USER = "dashboardusuario";
     private static final String ERROR_KEY = "error";
 
     private final UsuarioRepository userRepository;
@@ -79,28 +76,6 @@ public class AuthController {
         return "redirect:/login";
     }
 
-    @GetMapping("/api/verificar-usuario")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> verificarUsuario(@RequestParam String email) {
-        Map<String, Object> respuesta = new HashMap<>();
-
-        Optional<Usuario> userOpt = userRepository.findByCorreo(email);
-
-        if (userOpt.isEmpty()) {
-            respuesta.put("existe", false);
-        } else {
-            Usuario user = userOpt.get();
-
-            respuesta.put("existe", true);
-            respuesta.put("rol", user.getRol());
-            respuesta.put("bloqueado", user.estaBloqueado());
-            respuesta.put("segundosBloqueo", user.getSegundosBloqueo());
-            respuesta.put("intentosRestantes", Math.max(0, 3 - user.getIntentosFallidos()));
-        }
-
-        return ResponseEntity.ok(respuesta);
-    }
-
     @PostMapping("/api/cambiar-password")
     @ResponseBody
     public ResponseEntity<Map<String, String>> cambiarPassword(@RequestBody Map<String, String> datos) {
@@ -125,8 +100,6 @@ public class AuthController {
         }
 
         user.setClave(passwordEncoder.encode(nueva));
-        user.reiniciarIntentos();
-
         userRepository.save(user);
 
         respuesta.put("mensaje", "Contraseña actualizada correctamente");
@@ -175,8 +148,6 @@ public class AuthController {
         nuevo.setClave(passwordEncoder.encode(clave));
         nuevo.setRol(rol);
         nuevo.setEstado(true);
-        nuevo.reiniciarIntentos();
-
         userRepository.save(nuevo);
 
         respuesta.put("mensaje", "Usuario creado exitosamente");

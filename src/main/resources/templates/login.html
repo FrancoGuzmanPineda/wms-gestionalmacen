@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WMS - Iniciar Sesión</title>
-    <!-- Font Awesome 6 para iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" 
-          crossorigin="anonymous" referrerpolicy="no-referrer">
-    <!-- Bootstrap 5 CSS (para el modal) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" 
-          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+          integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer">
     <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 <body>
@@ -18,48 +17,62 @@
         <h1>Iniciar Sesión</h1>
         <p>Ingrese sus credenciales para acceder al sistema</p>
     </div>
+
     <div class="card-body">
-        <!-- Mensaje de error simulado -->
         <div id="errorMsg" class="error-message">
             <i class="fas fa-exclamation-circle"></i>
             <span>Usuario o contraseña incorrectos. Intente de nuevo.</span>
         </div>
 
-        <!-- FORMULARIO: con soporte para Thymeleaf y Spring Security -->
-        <form id="loginForm" method="post" th:action="@{/perform_login}" action="#">
-            <!-- Campo USUARIO -->
+        <div th:if="${passwordResetSuccess}" class="success-message show">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${passwordResetSuccess}"></span>
+        </div>
+
+        <form id="loginForm" method="post" th:action="@{/perform_login}">
             <div class="input-group">
                 <label for="username"><i class="fas fa-user-circle"></i> Usuario</label>
                 <div class="input-icon-wrapper">
                     <i class="fas fa-user input-icon"></i>
-                    <input type="text" id="username" name="username" placeholder="Ingrese su usuario" autocomplete="username" required>
+                    <input type="text"
+                           id="username"
+                           name="username"
+                           placeholder="Ingrese su usuario"
+                           autocomplete="username"
+                           required>
                 </div>
             </div>
 
-            <!-- Campo CONTRASEÑA -->
             <div class="input-group">
                 <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
                 <div class="input-icon-wrapper">
                     <i class="fas fa-key input-icon"></i>
-                    <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" autocomplete="current-password" required>
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           placeholder="Ingrese su contraseña"
+                           autocomplete="current-password"
+                           required>
                 </div>
             </div>
 
-            <!-- Opciones: Recordarme y Olvidó su contraseña -->
             <div class="options-row">
                 <label class="checkbox-label">
-                    <input type="checkbox" name="remember-me" id="rememberMe">
-                    <span>Recordarme</span>
+                    <input type="checkbox" id="rememberMe">
+                    <span>Recordar usuario</span>
                 </label>
-                <a href="#" id="forgotPasswordLink" class="forgot-link"><i class="far fa-question-circle"></i> Olvidó su contraseña?</a>
+
+                <a class="forgot-link" th:href="@{/recuperar-password}">
+                    ¿Olvidó su contraseña?
+                </a>
             </div>
 
-            <!-- Botón Iniciar Sesión -->
             <button type="submit" class="login-btn">
                 <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
             </button>
         </form>
     </div>
+
     <div class="card-footer">
         <div class="wms-brand">WMS</div>
         <div class="wms-sub">Sistema de Gestión de Almacenes</div>
@@ -70,50 +83,6 @@
     </div>
 </div>
 
-<!-- Modal de "Olvidó su contraseña" - Diseñado como en el modelo que enviaste (moderno, con campos y mensaje informativo) -->
-<div class="modal fade modal-forgot" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="forgotModalLabel">
-                    <i class="fas fa-key"></i> Recuperar contraseña
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>¿Olvidaste tu contraseña? No te preocupes. Ingresa tu correo electrónico o usuario y te enviaremos un enlace para restablecerla.</p>
-                
-                <div class="input-group-modal">
-                    <label for="recoveryEmail"><i class="fas fa-envelope me-1"></i> Correo electrónico o usuario</label>
-                    <div class="input-icon-wrapper-modal">
-                        <i class="fas fa-user-circle"></i>
-                        <input type="text" id="recoveryEmail" class="form-control" placeholder="Ej: usuario@wms.com / nombre_usuario" autocomplete="off">
-                    </div>
-                </div>
-                
-                <div class="alert-info-modal">
-                    <i class="fas fa-info-circle"></i>
-                    <span>Recibirás un correo con instrucciones para restablecer tu contraseña en unos minutos.</span>
-                </div>
-                
-                <div id="modalErrorMsg" style="display: none; margin-top: 12px; padding: 8px 12px; background: #ffe6e5; border-radius: 14px; color: #b13e3e; font-size: 0.75rem;">
-                    <i class="fas fa-exclamation-triangle"></i> <span id="modalErrorText"></span>
-                </div>
-                <div id="modalSuccessMsg" style="display: none; margin-top: 12px; padding: 8px 12px; background: #e0f2e9; border-radius: 14px; color: #1e6b3b; font-size: 0.75rem;">
-                    <i class="fas fa-check-circle"></i> <span id="modalSuccessText"></span>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn-modal-primary" id="sendRecoveryBtn">
-                    <i class="fas fa-paper-plane"></i> Enviar enlace
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" 
-            crossorigin="anonymous"></script>
 <script th:src="@{/js/login.js}" defer></script>
 </body>
 </html>

@@ -73,7 +73,6 @@ public class UsuarioController {
 
                 if (usuario.getClave() != null && !usuario.getClave().isBlank()) {
                     usuarioExistente.setClave(passwordEncoder.encode(usuario.getClave()));
-                    usuarioExistente.reiniciarIntentos();
                 }
 
                 usuarioRepository.save(usuarioExistente);
@@ -82,8 +81,6 @@ public class UsuarioController {
         }
 
         usuario.setClave(passwordEncoder.encode(usuario.getClave()));
-        usuario.reiniciarIntentos();
-        
         usuarioRepository.save(usuario);
         return "redirect:/usuarios";
     }

@@ -6,21 +6,19 @@
 
     <link rel="stylesheet" th:href="@{/css/despacho.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <script defer th:src="@{/js/despacho.js}"></script>
 </head>
 <body>
 
 <div class="layout">
 
-    <!-- SIDEBAR -->
     <th:block
         th:replace="~{fragments/sidebar :: sidebar(seccionActiva='despacho')}">
     </th:block>
 
-    <!-- CONTENIDO -->
     <main class="main">
 
         <header class="topbar">
-
             <h3>Módulo de Despachos</h3>
 
             <span>
@@ -28,17 +26,16 @@
                 |
                 <small th:text="${rol}">ADMIN</small>
             </span>
-
         </header>
 
         <section class="content">
 
             <div class="page-header">
-
                 <div>
                     <h1>Registrar Despacho</h1>
                     <p>
-                        Registro de salida de productos del almacén y actualización automática del stock.
+                        La salida se descuenta de la ubicación seleccionada
+                        y el stock total del producto se recalcula automáticamente.
                     </p>
                 </div>
 
@@ -47,18 +44,27 @@
                         Ver Inventario
                     </a>
                 </div>
-
             </div>
 
-            <div th:if="${mensajeExito}" class="card" style="border-left: 5px solid #198754;">
+            <div th:if="${mensajeExito}"
+                 class="card"
+                 style="border-left: 5px solid #198754;">
                 <strong th:text="${mensajeExito}"></strong>
             </div>
 
-            <div th:if="${mensajeError}" class="card" style="border-left: 5px solid #dc3545;">
+            <div th:if="${mensajeError}"
+                 class="card"
+                 style="border-left: 5px solid #dc3545;">
                 <strong th:text="${mensajeError}"></strong>
             </div>
 
-            <!-- FORMULARIO -->
+            <div th:if="${productos == null or #lists.isEmpty(productos)}"
+                 class="card"
+                 style="border-left: 5px solid #f59e0b;">
+                <strong>No existen productos activos.</strong>
+                Registre un producto antes de realizar un despacho.
+            </div>
+
             <div class="card">
 
                 <h2>Datos del Despacho</h2>
@@ -68,106 +74,135 @@
                     <div class="form-grid">
 
                         <div>
-                            <label>Producto</label>
+                            <label for="idProducto">Producto</label>
 
-                            <select name="idProducto" required>
+                            <select id="idProducto"
+                                    name="idProducto"
+                                    required
+                                    th:disabled="${productos == null or #lists.isEmpty(productos)}">
+                                <option th:if="${productos == null or #lists.isEmpty(productos)}"
+                                        value="">
+                                    No hay productos activos
+                                </option>
 
+                                <option th:each="producto, iter : ${productos}"
+                                        th:value="${producto.idProducto}"
+                                        th:selected="${iter.first}"
+                                        th:text="${producto.codigo
+                                            + ' - '
+                                            + producto.nombre
+                                            + ' | Stock total: '
+                                            + producto.stockActual}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="idUbicacion">
+                                Ubicación de origen
+                            </label>
+
+                            <select id="idUbicacion"
+                                    name="idUbicacion"
+                                    required
+                                    disabled>
                                 <option value="">
-                                    Seleccione producto
+                                    Cargando ubicaciones...
                                 </option>
-
-                                <option th:each="p : ${productos}"
-                                        th:value="${p.idProducto}"
-                                        th:text="${p.codigo + ' - ' + p.nombre}">
-                                </option>
-
                             </select>
+
+                            <small id="stockUbicacionAyuda">
+                                Las ubicaciones se consultan automáticamente
+                                según el producto seleccionado.
+                            </small>
                         </div>
 
                         <div>
-                            <label>Ubicación de origen</label>
+                            <label for="cantidad">Cantidad</label>
 
-                            <select name="idUbicacion" required>
-                                <option value="">Seleccione ubicación</option>
-                                <option th:each="u : ${ubicaciones}"
-                                        th:value="${u.idUbicacion}"
-                                        th:text="${u.codigoEstante + ' - ' + u.pasillo}">
-                                </option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label>Cantidad</label>
-
-                            <input type="number"
+                            <input id="cantidad"
+                                   type="number"
                                    name="cantidad"
                                    min="1"
-                                   required>
+                                   step="1"
+                                   required
+                                   disabled>
+
+                            <small id="cantidadAyuda">
+                                Seleccione una ubicación para conocer el stock disponible.
+                            </small>
                         </div>
 
                         <div>
-                            <label>Empresa Destino</label>
+                            <label for="empresaDestino">
+                                Empresa Destino
+                            </label>
 
-                            <input type="text"
+                            <input id="empresaDestino"
+                                   type="text"
                                    name="empresaDestino"
-                                   placeholder="Ej. Coca Cola Perú">
+                                   placeholder="Ej. Empresa cliente">
                         </div>
 
                         <div>
-                            <label>Conductor</label>
+                            <label for="conductor">Conductor</label>
 
-                            <input type="text"
+                            <input id="conductor"
+                                   type="text"
                                    name="conductor"
                                    placeholder="Nombre del conductor">
                         </div>
 
                         <div>
-                            <label>Placa Vehículo</label>
+                            <label for="placaVehiculo">
+                                Placa Vehículo
+                            </label>
 
-                            <input type="text"
+                            <input id="placaVehiculo"
+                                   type="text"
                                    name="placaVehiculo"
                                    placeholder="ABC-123">
                         </div>
 
                         <div>
-                            <label>Guía de Remisión</label>
+                            <label for="guiaRemision">
+                                Guía de Remisión
+                            </label>
 
-                            <input type="text"
+                            <input id="guiaRemision"
+                                   type="text"
                                    name="guiaRemision"
                                    placeholder="GR-000001">
                         </div>
 
                         <div class="full-width">
+                            <label for="observaciones">
+                                Observaciones
+                            </label>
 
-                            <label>Observaciones</label>
-
-                            <textarea
-                                    name="observaciones"
-                                    rows="4"
-                                    placeholder="Observaciones adicionales del despacho">
-                            </textarea>
-
+                            <textarea id="observaciones"
+                                      name="observaciones"
+                                      rows="4"
+                                      maxlength="255"
+                                      placeholder="Observaciones adicionales del despacho"></textarea>
                         </div>
-
                     </div>
 
                     <br>
 
-                    <button type="submit" class="btn primary">
+                    <button id="btnRegistrarDespacho"
+                            type="submit"
+                            class="btn primary"
+                            disabled>
                         Registrar Salida
                     </button>
-
                 </form>
-
             </div>
 
-            <!-- RESUMEN -->
             <div class="card">
-
-                <h2>Información del Proceso</h2>
+                <h2>Lógica aplicada</h2>
 
                 <table>
-
                     <thead>
                     <tr>
                         <th>Paso</th>
@@ -177,41 +212,35 @@
                     </thead>
 
                     <tbody>
-
                     <tr>
                         <td>1</td>
-                        <td>Seleccionar Producto</td>
-                        <td>Elegir el producto a despachar.</td>
+                        <td>Seleccionar producto</td>
+                        <td>Se consulta en qué ubicaciones existe stock.</td>
                     </tr>
-
                     <tr>
                         <td>2</td>
-                        <td>Registrar Cantidad</td>
-                        <td>Indicar la cantidad que saldrá del almacén.</td>
+                        <td>Seleccionar ubicación</td>
+                        <td>Se muestra la cantidad disponible en esa ubicación.</td>
                     </tr>
-
                     <tr>
                         <td>3</td>
-                        <td>Datos de Transporte</td>
-                        <td>Registrar conductor, placa y guía de remisión.</td>
+                        <td>Validar cantidad</td>
+                        <td>El sistema impide retirar más unidades de las disponibles.</td>
                     </tr>
-
                     <tr>
                         <td>4</td>
-                        <td>Actualizar Stock</td>
-                        <td>El sistema descuenta automáticamente el stock disponible.</td>
+                        <td>Actualizar inventario</td>
+                        <td>
+                            Se descuenta la ubicación y se recalcula el stock total
+                            del producto.
+                        </td>
                     </tr>
-
                     </tbody>
-
                 </table>
-
             </div>
 
         </section>
-
     </main>
-
 </div>
 
 </body>

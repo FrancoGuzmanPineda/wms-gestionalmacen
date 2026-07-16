@@ -44,8 +44,6 @@
                         <th>Clave</th>
                         <th>Rol</th>
                         <th>Estado</th>
-                        <th>Bloqueos</th>
-                        <th>Intentos</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -65,11 +63,6 @@
                         <td>
                             <span class="badge success" th:text="${usuario.estado} ? 'Activo' : 'Inactivo'">Activo</span>
                         </td>
-                        <td th:text="${usuario.intentosFallidos}">0</td>
-                        <td>
-                            <span th:if="${usuario.estaBloqueado()}" class="badge danger">Bloqueado</span>
-                            <span th:unless="${usuario.estaBloqueado()}" class="badge success">Sin bloqueo</span>
-                        </td>
                         <td>
                             <a th:href="@{/usuarios/editar/{id}(id=${usuario.idusuario})}" class="btn secondary">Editar</a>
                             <button type="button" class="btn danger" data-bs-toggle="modal" data-bs-target="#eliminarModal"
@@ -79,7 +72,7 @@
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(usuarios)}">
-                        <td colspan="9" class="empty">No hay usuarios registrados.</td>
+                        <td colspan="7" class="empty">No hay usuarios registrados.</td>
                     </tr>
                 </tbody>
             </table>

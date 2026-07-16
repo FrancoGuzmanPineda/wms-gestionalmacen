@@ -45,23 +45,16 @@
                 <a th:href="@{/productos}">Productos</a>
             </div>
 
-            <div class="filters">
-                <input type="text" placeholder="Buscar por código o nombre">
+            <form class="filters" method="get" th:action="@{/inventario}">
+                <input type="search"
+                       name="buscar"
+                       th:value="${buscar}"
+                       placeholder="Buscar por código o nombre"
+                       aria-label="Buscar producto por código o nombre">
 
-                <select>
-                    <option>Categoría: Todas</option>
-                </select>
-
-                <select>
-                    <option>Estado: Todos</option>
-                </select>
-
-                <select>
-                    <option>Stock: Todos</option>
-                </select>
-
-                <button>Limpiar filtros</button>
-            </div>
+                <button type="submit" class="primary">Buscar</button>
+                <a th:href="@{/inventario}" class="btn secondary">Limpiar filtro</a>
+            </form>
 
             <div class="card" style="padding: 30px;">
                 <table>
@@ -71,7 +64,8 @@
                             <th>Producto</th>
                             <th>Categoría</th>
                             <th>Tipo</th>
-                            <th>Stock Actual</th>
+                            <th>Stock Total</th>
+                            <th>Distribución por Ubicación</th>
                             <th>Stock Mínimo</th>
                             <th>Unidad</th>
                             <th>Estado</th>
@@ -84,7 +78,29 @@
                             <td th:text="${producto.nombre}">Producto</td>
                             <td th:text="${producto.categoria.nombreCategoria}">Categoría</td>
                             <td th:text="${producto.tipo.nombreTipo}">Tipo</td>
-                            <td th:text="${producto.stockActual}">0</td>
+                            <td>
+                                <strong th:text="${producto.stockActual}">0</strong>
+                            </td>
+
+                            <td>
+                                <div class="location-stock-list"
+                                     th:with="stocks=${stockPorProducto.get(producto.idProducto)}">
+
+                                    <span th:if="${stocks == null or #lists.isEmpty(stocks)}"
+                                          class="location-stock-empty">
+                                        Sin stock asignado
+                                    </span>
+
+                                    <span th:each="stock : ${stocks}"
+                                          class="location-stock-item">
+                                        <strong th:text="${stock.ubicacion.codigoEstante}">A-01</strong>
+                                        <span th:text="${' (' + stock.ubicacion.pasillo + '): ' + stock.cantidad}">
+                                            (Pasillo A): 0
+                                        </span>
+                                    </span>
+                                </div>
+                            </td>
+
                             <td th:text="${producto.stockMinimo}">0</td>
                             <td th:text="${producto.unidadMedida}">Und</td>
 
@@ -104,8 +120,9 @@
                         </tr>
 
                         <tr th:if="${#lists.isEmpty(productos)}">
-                            <td colspan="8" class="empty">
-                                No hay productos registrados.
+                            <td colspan="9" class="empty">
+                                <span th:if="${buscar == null or #strings.isEmpty(buscar)}">No hay productos registrados.</span>
+                                <span th:unless="${buscar == null or #strings.isEmpty(buscar)}">No se encontraron productos para la búsqueda indicada.</span>
                             </td>
                         </tr>
                     </tbody>

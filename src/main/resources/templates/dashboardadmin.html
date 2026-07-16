@@ -30,6 +30,13 @@
         </header>
 
         <section class="content">
+          <div th:if="${param.accesoDenegado}" class="alert-card warning" style="margin-bottom: 18px;">
+            <div class="alert-icon">⚠️</div>
+            <div>
+              <h3>Acceso restringido</h3>
+              <p>Su cuenta no tiene permiso para acceder al módulo solicitado.</p>
+            </div>
+          </div>
           <!-- ENCABEZADO -->
           <div class="page-header">
             <div>
@@ -49,7 +56,6 @@
               >
               <a th:href="@{/dashboard/pdf}" class="btn pdf"
                 >📄 Descargar PDF</a
-              >
               >
             </div>
           </div>
@@ -220,7 +226,7 @@
             <div class="panel">
               <div class="panel-header">
                 <h2>Últimos movimientos de almacén</h2>
-                <span>Últimos 30 días</span>
+                <span>10 registros más recientes</span>
               </div>
 
               <div class="table-responsive">

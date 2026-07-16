@@ -13,7 +13,7 @@ public interface MovimientoRepository extends JpaRepository<Movimiento, Integer>
 
     List<Movimiento> findByEstado(String estado);
 
-    List<Movimiento> findByTipoMovimiento(String tipoMovimiento);
+    List<Movimiento> findByTipoMovimientoOrderByFechaDesc(String tipoMovimiento);
 
     List<Movimiento> findByProductoIdProducto(Integer idProducto);
 
@@ -43,8 +43,6 @@ List<Movimiento> buscarSalidasPorFecha(
         LocalDate fin
 );
 
-    // Suma la cantidad de entradas o salidas dentro de un rango de fechas.
-    // Se usará para los KPIs: Entradas del día y Salidas del día.
     @Query("""
     SELECT COALESCE(SUM(m.cantidad), 0)
     FROM Movimiento m
@@ -59,8 +57,7 @@ List<Movimiento> buscarSalidasPorFecha(
             @Param("fin") LocalDateTime fin
     );
 
-    // Obtiene los 10 últimos movimientos completados del almacén.
-    // Se usará para graficos del dashboard.
+
     List<Movimiento> findTop10ByEstadoOrderByFechaDesc(String estado);
     List<Movimiento> findByEstadoAndFechaBetweenOrderByFechaAsc(
         String estado,

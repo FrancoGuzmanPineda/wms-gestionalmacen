@@ -15,7 +15,6 @@
             padding: 1.5rem;
         }
 
-        /* Tarjeta principal - fondo blanco como se solicita */
         .login-card {
             max-width: 480px;
             width: 100%;
@@ -30,7 +29,6 @@
             transform: translateY(-4px);
         }
 
-        /* Header con decoración */
         .card-header {
             padding: 1rem 2rem 0.2rem 2rem;
             text-align: center;
@@ -54,13 +52,11 @@
             padding-bottom: 0.2rem;
         }
 
-        /* Contenido del formulario */
         .card-body {
             padding: 0.5rem 2rem 1rem 2rem;
             background: #ffffff;
         }
 
-        /* Grupos de input estilo moderno */
         .input-group {
             margin-bottom: 1.5rem;
             display: flex;
@@ -84,7 +80,7 @@
             font-size: 0.9rem;
         }
 
-        /* Contenedor del input con ícono decorativo interno */
+
         .input-icon-wrapper {
             position: relative;
             display: flex;
@@ -150,20 +146,6 @@
             accent-color: #2c7da0;
         }
 
-        .forgot-link {
-            color: #2c7da0;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
-            font-size: 0.85rem;
-        }
-
-        .forgot-link:hover {
-            color: #1f5e7e;
-            text-decoration: underline;
-        }
-
-        /* Botón de inicio de sesión */
         .login-btn {
             width: 100%;
             background: #255EAF;
@@ -272,149 +254,54 @@
             display: flex;
         }
 
-        /* Estilos del modal personalizado para olvidó contraseña (coherentes con la imagen) */
-        .modal-forgot .modal-content {
-            border-radius: 28px;
-            border: none;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
 
-        .modal-forgot .modal-header {
-            background: #ffffff;
-            border-bottom: 1px solid #eef2f6;
-            padding: 1.5rem 1.8rem 1rem 1.8rem;
-        }
+/* Recuperación de contraseña */
+.forgot-link {
+    color: #255eaf;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
 
-        .modal-forgot .modal-header .modal-title {
-            font-weight: 700;
-            font-size: 1.4rem;
-            color: #0a2e3f;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.forgot-link:hover {
+    color: #173f7a;
+    text-decoration: underline;
+}
 
-        .modal-forgot .modal-header .modal-title i {
-            color: #2c7da0;
-            font-size: 1.5rem;
-        }
+.success-message {
+    background: #e6f7ee;
+    border-left: 4px solid #198754;
+    padding: 0.75rem;
+    border-radius: 14px;
+    margin-bottom: 1.2rem;
+    font-size: 0.82rem;
+    color: #17633f;
+    display: none;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+}
 
-        .modal-forgot .modal-body {
-            padding: 1.5rem 1.8rem;
-            background: #ffffff;
-        }
+.success-message.show {
+    display: flex;
+}
 
-        .modal-forgot .modal-body p {
-            color: #4a5b66;
-            font-size: 0.9rem;
-            margin-bottom: 1.2rem;
-            line-height: 1.5;
-        }
+.help-text {
+    background: #f3f7fb;
+    border: 1px solid #dbe6ef;
+    border-radius: 12px;
+    color: #52697a;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    margin-bottom: 1.2rem;
+    padding: 0.8rem;
+}
 
-        .modal-forgot .input-group-modal {
-            margin-bottom: 1rem;
-        }
-
-        .modal-forgot .input-group-modal label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #1f3e4b;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .modal-forgot .input-icon-wrapper-modal {
-            position: relative;
-        }
-
-        .modal-forgot .input-icon-wrapper-modal i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9aaeb9;
-            font-size: 1rem;
-        }
-
-        .modal-forgot .input-icon-wrapper-modal input {
-            width: 100%;
-            padding: 0.85rem 1rem 0.85rem 2.8rem;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 18px;
-            font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
-        }
-
-        .modal-forgot .input-icon-wrapper-modal input:focus {
-            outline: none;
-            border-color: #2c7da0;
-            box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.2);
-        }
-
-        .modal-forgot .alert-info-modal {
-            background: #e8f4f8;
-            border-radius: 16px;
-            padding: 0.8rem 1rem;
-            font-size: 0.8rem;
-            color: #1f6e8c;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 1rem;
-            border-left: 3px solid #2c7da0;
-        }
-
-        .modal-forgot .alert-info-modal i {
-            font-size: 1rem;
-        }
-
-        .modal-forgot .modal-footer {
-            border-top: 1px solid #eef2f6;
-            padding: 1rem 1.8rem 1.5rem;
-            background: #fafcfd;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .btn-modal-primary {
-            background: #255EAF;
-            color: white;
-            border: none;
-            padding: 0.6rem 1.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-
-        .btn-modal-primary:hover {
-            background: #1d4a88;
-            transform: translateY(-1px);
-        }
-
-        .btn-modal-secondary {
-            background: #f0f2f5;
-            color: #4a5b66;
-            border: none;
-            padding: 0.6rem 1.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-
-        .btn-modal-secondary:hover {
-            background: #e4e8ed;
-        }
-
-        /* Animación suave */
-        .modal.fade .modal-dialog {
-            transform: scale(0.95);
-            transition: transform 0.2s ease-out;
-        }
-
-        .modal.show .modal-dialog {
-            transform: scale(1);
-        }
+.center-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    text-align: center;
+}

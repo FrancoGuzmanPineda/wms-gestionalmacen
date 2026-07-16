@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Movimientos - WMS</title>
+    <title>Movimientos de ingreso - WMS</title>
     <link rel="stylesheet" th:href="@{/css/inventario.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 </head>
@@ -45,7 +45,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr th:each="movimiento : ${movimientos}">
+                            <td th:text="${movimiento.fecha != null ? #temporals.format(movimiento.fecha, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
+                            <td th:text="${movimiento.producto != null ? movimiento.producto.nombre : '-'}">Producto</td>
+                            <td th:text="${movimiento.cantidad}">0</td>
+                            <td th:text="${movimiento.ubicacion != null ? movimiento.ubicacion.codigoEstante : '-'}">-</td>
+                            <td th:text="${movimiento.usuario != null ? movimiento.usuario.nombre : '-'}">Usuario</td>
+                            <td>
+                                <span class="badge success" th:text="${movimiento.tipoMovimiento}">Ingreso</span>
+                            </td>
+                            <td th:text="${movimiento.observacion != null and !#strings.isEmpty(movimiento.observacion) ? movimiento.observacion : 'Sin observación'}">Sin observación</td>
+                        </tr>
+
+                        <tr th:if="${movimientos == null or #lists.isEmpty(movimientos)}">
                             <td colspan="7" class="empty">No hay movimientos de ingreso registrados.</td>
                         </tr>
                     </tbody>

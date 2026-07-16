@@ -29,19 +29,22 @@ public class RecepcionService {
     private final UbicacionRepository ubicacionRepository;
     private final TipoMovimientoRepository tipoMovimientoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final InventarioUbicacionService inventarioUbicacionService;
 
     public RecepcionService(
             MovimientoRepository movimientoRepository,
             ProductoRepository productoRepository,
             UbicacionRepository ubicacionRepository,
             TipoMovimientoRepository tipoMovimientoRepository,
-            UsuarioRepository usuarioRepository
+            UsuarioRepository usuarioRepository,
+            InventarioUbicacionService inventarioUbicacionService
     ) {
         this.movimientoRepository = movimientoRepository;
         this.productoRepository = productoRepository;
         this.ubicacionRepository = ubicacionRepository;
         this.tipoMovimientoRepository = tipoMovimientoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.inventarioUbicacionService = inventarioUbicacionService;
     }
 
     @Transactional
@@ -58,7 +61,7 @@ public class RecepcionService {
             );
         }
 
-        Producto producto = productoRepository.findById(idProducto)
+        Producto producto = productoRepository.buscarPorIdParaActualizar(idProducto)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "El producto seleccionado no existe."
                 ));
@@ -108,12 +111,16 @@ public class RecepcionService {
                                 "No existe el tipo de movimiento Ingreso."
                         ));
 
-        int stockActual = producto.getStockActual() == null
-                ? 0
-                : producto.getStockActual();
-
-        producto.setStockActual(stockActual + cantidad);
-        productoRepository.save(producto);
+        /*
+         * El ingreso aumenta el stock de la ubicación seleccionada.
+         * El servicio también recalcula el stock total del producto como
+         * la suma de todas sus ubicaciones.
+         */
+        inventarioUbicacionService.aumentarStock(
+                producto,
+                ubicacion,
+                cantidad
+        );
 
         Movimiento movimiento = new Movimiento();
         movimiento.setProducto(producto);
@@ -130,7 +137,8 @@ public class RecepcionService {
     }
 
     public List<Movimiento> listarMovimientosIngreso() {
-        return movimientoRepository.findByTipoMovimiento("Ingreso");
+        return movimientoRepository
+                .findByTipoMovimientoOrderByFechaDesc("Ingreso");
     }
 
     public List<Movimiento> listarTodosLosMovimientos() {

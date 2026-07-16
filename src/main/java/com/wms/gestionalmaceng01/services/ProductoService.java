@@ -27,6 +27,14 @@ public class ProductoService {
         return productoRepository.findByEstado("Activo");
     }
 
+    public List<Producto> buscarInventarioActivo(String buscar) {
+        if (buscar == null || buscar.isBlank()) {
+            return listarActivos();
+        }
+
+        return productoRepository.buscarInventarioActivo(buscar.trim());
+    }
+
     public Optional<Producto> buscarPorId(Integer id) {
         return productoRepository.findById(id);
     }
@@ -120,66 +128,6 @@ public class ProductoService {
 
             productoRepository.save(producto);
         }
-    }
-
-    public Producto aumentarStock(
-            Integer idProducto,
-            Integer cantidad
-    ) {
-        Producto producto = productoRepository
-                .findById(idProducto)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Producto no encontrado."
-                        )
-                );
-
-        if (cantidad == null || cantidad <= 0) {
-            throw new IllegalArgumentException(
-                    "La cantidad debe ser mayor a cero."
-            );
-        }
-
-        int stockActual = producto.getStockActual() == null
-                ? 0
-                : producto.getStockActual();
-
-        producto.setStockActual(stockActual + cantidad);
-
-        return productoRepository.save(producto);
-    }
-
-    public Producto disminuirStock(
-            Integer idProducto,
-            Integer cantidad
-    ) {
-        Producto producto = productoRepository
-                .findById(idProducto)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Producto no encontrado."
-                        )
-                );
-
-        if (cantidad == null || cantidad <= 0) {
-            throw new IllegalArgumentException(
-                    "La cantidad debe ser mayor a cero."
-            );
-        }
-
-        int stockActual = producto.getStockActual() == null
-                ? 0
-                : producto.getStockActual();
-
-        if (stockActual < cantidad) {
-            throw new IllegalArgumentException(
-                    "Stock insuficiente."
-            );
-        }
-
-        producto.setStockActual(stockActual - cantidad);
-
-        return productoRepository.save(producto);
     }
 
     private void prepararValoresGenerales(Producto producto) {

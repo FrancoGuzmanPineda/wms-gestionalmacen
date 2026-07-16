@@ -15,6 +15,7 @@ import com.wms.gestionalmaceng01.services.CustomUserDetailsService;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     private static final String LOGIN_URL = "/login";
 
     private final CustomUserDetailsService userDetailsService;
@@ -27,33 +28,33 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-              
-.requestMatchers(
-    LOGIN_URL,
-    "/recuperarclave",
-    "/css/**",
-    "/js/**",
-    "/api/**",
-    "/error",
+                .requestMatchers(
+                    LOGIN_URL,
+                    "/recuperar-password",
+                    "/restablecer-password",
+                    "/css/**",
+                    "/js/**",
+                    "/images/**",
+                    "/favicon.ico",
+                    "/error"
+                ).permitAll()
 
-    "/inventario",
-    "/inventario/**",
+                // Solo el administrador puede gestionar usuarios o crear cuentas por API.
+                .requestMatchers(
+                    "/usuarios/**",
+                    "/api/crear-usuario"
+                ).hasRole("ADMIN")
 
-   "/recepcion",
-    "/recepcion/**",
-
-    "/despacho",
-    "/despacho/**",
-
-    "/productos",
-    "/productos/**",
-
-    "/categorias",
-    "/categorias/**",
-
-    "/ubicaciones",
-    "/ubicaciones/**"
-).permitAll()
+                // Módulos operativos disponibles para administradores y supervisores.
+                .requestMatchers(
+                    "/dashboard/**",
+                    "/inventario/**",
+                    "/recepcion/**",
+                    "/despacho/**",
+                    "/productos/**",
+                    "/movimientos/**",
+                    "/api/cambiar-password"
+                ).hasAnyRole("ADMIN", "SUPERVISOR")
 
                 .anyRequest().authenticated()
             )
@@ -71,6 +72,12 @@ public class SecurityConfig {
                 .logoutSuccessUrl(LOGIN_URL + "?logout=true")
                 .permitAll()
             )
+            .exceptionHandling(exception -> exception
+                .accessDeniedHandler((request, response, accessDeniedException) ->
+                    response.sendRedirect("/dashboard?accesoDenegado=true")
+                )
+            )
+            // Se mantiene deshabilitado para no alterar los formularios existentes en esta etapa.
             .csrf(csrf -> csrf.disable());
 
         return http.build();
