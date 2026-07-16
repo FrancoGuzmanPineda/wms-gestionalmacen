@@ -5,6 +5,7 @@ import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -14,23 +15,31 @@ import org.springframework.context.event.EventListener;
 public class Gestionalmaceng01Application {
 
     private static final Logger logger = LoggerFactory.getLogger(Gestionalmaceng01Application.class);
-    private static final String APPLICATION_URL = "http://localhost:8080/login";
+
+    @Value("${app.base-url:http://localhost:8080}")
+    private String baseUrl;
+
+    @Value("${app.browser.enabled:true}")
+    private boolean aperturaAutomaticaHabilitada;
 
     public static void main(String[] args) {
         SpringApplication.run(Gestionalmaceng01Application.class, args);
     }
 
-    /**
-     * Abre la pantalla de inicio de sesión cuando Spring Boot termina de iniciar.
-     * Si el sistema operativo no permite abrir el navegador, la aplicación sigue
-     * ejecutándose y se muestra la dirección en la consola.
-     */
     @EventListener(ApplicationReadyEvent.class)
     public void abrirNavegador() {
-        logger.info("Servidor iniciado en: {}", APPLICATION_URL);
+        String loginUrl = normalizarBaseUrl(baseUrl) + "/login";
+        logger.info("Servidor iniciado en: {}", loginUrl);
+
+        // Durante las pruebas automáticas esta opción se desactiva para evitar
+        // abrir ventanas o ejecutar comandos del sistema operativo.
+        if (!aperturaAutomaticaHabilitada) {
+            logger.info("Apertura automática del navegador deshabilitada para este entorno.");
+            return;
+        }
 
         try {
-            URI uri = URI.create(APPLICATION_URL);
+            URI uri = URI.create(loginUrl);
 
             if (Desktop.isDesktopSupported()
                     && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
@@ -38,13 +47,20 @@ public class Gestionalmaceng01Application {
                 return;
             }
 
-            abrirConComandoDelSistemaOperativo(APPLICATION_URL);
+            abrirConComandoDelSistemaOperativo(loginUrl);
         } catch (Exception exception) {
             logger.warn(
                     "No se pudo abrir el navegador automáticamente. Abra manualmente: {}",
-                    APPLICATION_URL,
+                    loginUrl,
                     exception);
         }
+    }
+
+    private String normalizarBaseUrl(String url) {
+        if (url == null || url.isBlank()) {
+            return "http://localhost:8080";
+        }
+        return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
     }
 
     private void abrirConComandoDelSistemaOperativo(String url) throws Exception {

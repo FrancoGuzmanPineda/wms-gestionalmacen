@@ -390,6 +390,8 @@ CREATE TABLE `despachos` (
   `id_ubicacion` INT NOT NULL,
   `cantidad` INT NOT NULL,
   `fecha_salida` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_llegada` DATETIME DEFAULT NULL,
+  `fecha_registro` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `empresa_destino` VARCHAR(255) DEFAULT NULL,
   `conductor` VARCHAR(255) DEFAULT NULL,
   `placa_vehiculo` VARCHAR(255) DEFAULT NULL,
@@ -402,6 +404,7 @@ CREATE TABLE `despachos` (
   KEY `idx_despachos_ubicacion` (`id_ubicacion`),
   KEY `idx_despachos_usuario` (`id_usuario`),
   KEY `idx_despachos_fecha` (`fecha_salida`),
+  KEY `idx_fecha_registro` (`fecha_registro`),
   CONSTRAINT `fk_despachos_producto`
     FOREIGN KEY (`id_producto`)
     REFERENCES `productos` (`id_producto`)
@@ -769,3 +772,4 @@ SET SQL_SAFE_UPDATES = @OLD_SQL_SAFE_UPDATES;
 -- SELECT * FROM inventario_ubicaciones ORDER BY id_producto, id_ubicacion;
 -- SELECT * FROM movimientos ORDER BY fecha DESC;
 -- SELECT * FROM password_reset_tokens;
+
