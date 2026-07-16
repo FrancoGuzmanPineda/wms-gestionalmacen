@@ -2,6 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recepción de Mercancía - WMS</title>
     <link rel="stylesheet" th:href="@{/css/inventario.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
@@ -11,10 +12,8 @@
 
 <div class="layout">
 
-    <!-- MENÚ LATERAL -->
     <th:block th:replace="~{fragments/sidebar :: sidebar(seccionActiva='recepcion')}"></th:block>
 
-    <!-- CONTENIDO PRINCIPAL -->
     <main class="main">
 
         <header class="topbar">
@@ -22,300 +21,325 @@
             <h3>Recepción de Mercancía</h3>
 
             <span>
-                <strong th:text="${nombre}">
-                    Usuario
-                </strong>
-
+                <strong th:text="${nombre}">Usuario</strong>
                 |
-
-                <small th:text="${rol}">
-                    ROL
-                </small>
+                <small th:text="${rol}">ROL</small>
             </span>
 
         </header>
 
         <section class="content">
 
-            <!-- ENCABEZADO -->
             <div class="page-header">
 
                 <div>
                     <h1>Registrar Recepción</h1>
-
                     <p>
-                        Ingreso de productos al almacén y actualización
-                        automática de stock
+                        Registre el ingreso de un producto hacia una ubicación
+                        y actualice su stock de forma controlada.
                     </p>
                 </div>
 
                 <div class="buttons">
-
-                    <a th:href="@{/dashboard}"
-                       class="btn secondary">
+                    <a th:href="@{/dashboard}" class="btn secondary">
                         Volver al Dashboard
                     </a>
-
-                    <a th:href="@{/inventario}"
-                       class="btn secondary">
+                    <a th:href="@{/inventario}" class="btn secondary">
                         Ver Inventario
                     </a>
-
                 </div>
 
             </div>
 
-            <!-- MENSAJE DE ÉXITO -->
             <div th:if="${mensajeExito}"
-                 class="form-card"
-                 style="border-left: 5px solid #198754;
-                        margin-bottom: 20px;">
-
+                 class="form-card reception-message reception-message-success">
                 <strong th:text="${mensajeExito}">
                     Operación realizada correctamente.
                 </strong>
-
             </div>
 
-            <!-- MENSAJE DE ERROR -->
             <div th:if="${mensajeError}"
-                 class="form-card"
-                 style="border-left: 5px solid #dc3545;
-                        margin-bottom: 20px;">
-
+                 class="form-card reception-message reception-message-error">
                 <strong th:text="${mensajeError}">
                     Ocurrió un error.
                 </strong>
-
             </div>
 
-            <!-- FORMULARIO DE RECEPCIÓN -->
             <div class="form-card">
 
-                <form th:action="@{/recepcion/registrar}"
+                <div class="form-section-heading">
+                    <div>
+                        <h2>Datos del ingreso</h2>
+                        <p>
+                            Los datos del movimiento y del responsable se registran
+                            internamente a partir de esta operación y de la sesión activa.
+                        </p>
+                    </div>
+                </div>
+
+                <form id="recepcionForm"
+                      th:action="@{/recepcion/registrar}"
+                      th:object="${recepcionForm}"
                       method="post">
 
                     <div class="form-grid">
 
-                        <!-- PRODUCTO -->
                         <div class="form-group">
-
-                            <label for="idProducto">
-                                Producto
-                            </label>
+                            <label for="idProducto">Producto</label>
 
                             <select id="idProducto"
-                                    name="idProducto"
+                                    th:field="*{idProducto}"
                                     required>
 
-                                <option value="">
-                                    Seleccione un producto
-                                </option>
+                                <option value="">Seleccione un producto</option>
 
                                 <option th:each="producto : ${productos}"
                                         th:value="${producto.idProducto}"
-                                        th:text="${producto.codigo
-                                            + ' - '
-                                            + producto.nombre}">
+                                        th:text="${producto.codigo + ' - ' + producto.nombre}"
+                                        th:attr="data-codigo=${producto.codigo},
+                                                 data-nombre=${producto.nombre},
+                                                 data-stock=${producto.stockActual != null ? producto.stockActual : 0},
+                                                 data-unidad=${producto.unidadMedida != null ? producto.unidadMedida : 'unidades'}">
                                 </option>
 
                             </select>
 
+                            <small id="productoAyuda" class="field-help">
+                                Seleccione un producto para consultar su stock total actual.
+                            </small>
                         </div>
 
-                        <!-- UBICACIÓN -->
                         <div class="form-group">
-
-                            <label for="idUbicacion">
-                                Ubicación
-                            </label>
+                            <label for="idUbicacion">Ubicación destino</label>
 
                             <select id="idUbicacion"
-                                    name="idUbicacion"
+                                    th:field="*{idUbicacion}"
                                     required>
 
-                                <option value="">
-                                    Seleccione una ubicación
-                                </option>
+                                <option value="">Seleccione una ubicación</option>
 
                                 <option th:each="ubicacion : ${ubicaciones}"
                                         th:value="${ubicacion.idUbicacion}"
-                                        th:text="${ubicacion.codigoEstante
-                                            + ' - '
-                                            + ubicacion.pasillo}">
+                                        th:text="${ubicacion.codigoEstante + ' - ' + ubicacion.pasillo}"
+                                        th:attr="data-codigo=${ubicacion.codigoEstante},
+                                                 data-tipo=${ubicacion.tipoUbicacion != null ? ubicacion.tipoUbicacion : 'Sin clasificación'},
+                                                 data-pasillo=${ubicacion.pasillo != null ? ubicacion.pasillo : '-'}">
                                 </option>
 
                             </select>
 
-                        </div>
-
-                        <!-- TIPO DE MOVIMIENTO -->
-                        <div class="form-group">
-
-                            <label for="tipoMovimiento">
-                                Tipo de movimiento
-                            </label>
-
-                            <input id="tipoMovimiento"
-                                   type="text"
-                                   value="Ingreso automático"
-                                   readonly>
-
-                            <small>
-                                El sistema registrará automáticamente
-                                un movimiento de ingreso.
+                            <small id="ubicacionAyuda" class="field-help">
+                                Seleccione la ubicación donde quedará registrado el stock.
                             </small>
-
                         </div>
 
-                        <!-- USUARIO AUTENTICADO -->
                         <div class="form-group">
-
-                            <label for="usuarioResponsable">
-                                Usuario responsable
-                            </label>
-
-                            <input id="usuarioResponsable"
-                                   type="text"
-                                   th:value="${nombre + ' - ' + correo}"
-                                   readonly>
-
-                            <small>
-                                El responsable se obtiene automáticamente
-                                de la sesión iniciada.
-                            </small>
-
-                        </div>
-
-                        <!-- CANTIDAD -->
-                        <div class="form-group">
-
-                            <label for="cantidad">
-                                Cantidad recibida
-                            </label>
+                            <label for="cantidad">Cantidad recibida</label>
 
                             <input id="cantidad"
                                    type="number"
-                                   name="cantidad"
+                                   th:field="*{cantidad}"
                                    min="1"
                                    step="1"
                                    placeholder="Ingrese la cantidad"
                                    required>
 
+                            <small class="field-help">
+                                Solo se aceptan cantidades enteras mayores a cero.
+                            </small>
                         </div>
 
-                        <!-- OBSERVACIÓN -->
-                        <div class="form-group full">
-
-                            <label for="observacion">
-                                Observación
-                            </label>
+                        <div class="form-group">
+                            <label for="observacion">Observación</label>
 
                             <textarea id="observacion"
-                                      name="observacion"
+                                      th:field="*{observacion}"
                                       rows="4"
                                       maxlength="255"
-                                      placeholder="Ingrese una observación opcional"></textarea>
+                                      placeholder="Detalle opcional de la recepción"></textarea>
 
-                            <small>
-                                Máximo 255 caracteres.
+                            <small class="field-help">
+                                Opcional. Máximo 255 caracteres.
                             </small>
-
                         </div>
 
                     </div>
 
-                    <!-- ACCIONES -->
-                    <div class="form-actions">
+                    <section class="reception-preview" aria-labelledby="resumenRecepcionTitulo">
+                        <div class="reception-preview-heading">
+                            <div>
+                                <h3 id="resumenRecepcionTitulo">Resumen previo de la recepción</h3>
+                                <p id="resumenEstado" aria-live="polite">
+                                    Complete producto, ubicación y cantidad para revisar el resultado.
+                                </p>
+                            </div>
+                        </div>
 
-                        <a th:href="@{/inventario}"
-                           class="btn secondary">
+                        <div class="reception-preview-grid">
+                            <div class="preview-item preview-item-wide">
+                                <span>Producto</span>
+                                <strong id="resumenProducto">Sin seleccionar</strong>
+                                <small id="resumenCodigoProducto">Código: -</small>
+                            </div>
+
+                            <div class="preview-item preview-item-wide">
+                                <span>Ubicación destino</span>
+                                <strong id="resumenUbicacion">Sin seleccionar</strong>
+                                <small id="resumenDetalleUbicacion">Pasillo y tipo: -</small>
+                            </div>
+
+                            <div class="preview-item">
+                                <span>Stock total actual</span>
+                                <strong id="resumenStockTotalActual">-</strong>
+                            </div>
+
+                            <div class="preview-item">
+                                <span>Stock actual en ubicación</span>
+                                <strong id="resumenStockUbicacionActual">-</strong>
+                            </div>
+
+                            <div class="preview-item">
+                                <span>Cantidad por ingresar</span>
+                                <strong id="resumenCantidadIngreso">-</strong>
+                            </div>
+
+                            <div class="preview-item preview-item-result">
+                                <span>Stock resultante en ubicación</span>
+                                <strong id="resumenStockUbicacionResultado">-</strong>
+                            </div>
+
+                            <div class="preview-item preview-item-result">
+                                <span>Stock total resultante</span>
+                                <strong id="resumenStockTotalResultado">-</strong>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="form-actions">
+                        <a th:href="@{/inventario}" class="btn secondary">
                             Cancelar
                         </a>
 
-                        <button type="submit"
+                        <button id="btnRegistrarRecepcion"
+                                type="submit"
                                 class="btn primary">
                             Registrar Recepción
                         </button>
-
                     </div>
 
                 </form>
 
             </div>
 
-            <!-- HISTORIAL DE RECEPCIONES -->
-            <div class="card movimientos">
+            <div class="card movimientos reception-history">
 
-                <h2>Recepciones Registradas</h2>
+                <div class="card-heading-row">
+                    <div>
+                        <h2>Últimas 10 recepciones</h2>
+                        <p>
+                            Historial reciente de ingresos registrados en el almacén.
+                        </p>
+                    </div>
 
-                <table>
+                    <a th:href="@{/movimientos}" class="history-link">
+                        Ver historial completo
+                    </a>
+                </div>
 
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Ubicación</th>
-                            <th>Usuario</th>
-                            <th>Tipo Movimiento</th>
-                            <th>Observación</th>
-                        </tr>
-                    </thead>
+                <div class="table-responsive">
+                    <table class="reception-table">
 
-                    <tbody>
+                        <thead>
+                            <tr>
+                                <th>N.°</th>
+                                <th>Fecha y hora</th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Ubicación</th>
+                                <th>Responsable</th>
+                                <th>Observación</th>
+                            </tr>
+                        </thead>
 
-                        <tr th:each="movimiento : ${movimientos}">
+                        <tbody>
 
-                            <td th:text="${movimiento.fecha}">
-                                Fecha
-                            </td>
+                            <tr th:each="movimiento : ${movimientos}">
 
-                            <td th:text="${movimiento.producto.nombre}">
-                                Producto
-                            </td>
+                                <td>
+                                    <strong th:text="${'#' + movimiento.idMovimiento}">#1</strong>
+                                </td>
 
-                            <td th:text="${movimiento.cantidad}">
-                                0
-                            </td>
+                                <td th:text="${movimiento.fecha != null
+                                        ? #temporals.format(movimiento.fecha, 'dd/MM/yyyy HH:mm')
+                                        : '-'}">
+                                    16/07/2026 10:25
+                                </td>
 
-                            <td th:text="${movimiento.ubicacion.codigoEstante}">
-                                A-01
-                            </td>
+                                <td>
+                                    <strong th:text="${movimiento.producto.nombre}">
+                                        Producto
+                                    </strong>
+                                    <small class="table-detail"
+                                           th:text="${movimiento.producto.codigo}">
+                                        COD-001
+                                    </small>
+                                </td>
 
-                            <td th:text="${movimiento.usuario.nombre}">
-                                Usuario
-                            </td>
+                                <td>
+                                    <strong th:text="${movimiento.cantidad}">0</strong>
+                                    <small class="table-detail"
+                                           th:text="${movimiento.producto.unidadMedida != null
+                                                && !movimiento.producto.unidadMedida.isBlank()
+                                                ? movimiento.producto.unidadMedida
+                                                : 'unidades'}">
+                                        unidades
+                                    </small>
+                                </td>
 
-                            <td>
-                                <span class="badge success"
-                                      th:text="${movimiento.tipoMovimiento}">
-                                    Ingreso
-                                </span>
-                            </td>
+                                <td>
+                                    <strong th:text="${movimiento.ubicacion.codigoEstante}">
+                                        A-01
+                                    </strong>
+                                    <small class="table-detail"
+                                           th:text="${(movimiento.ubicacion.pasillo != null
+                                                ? movimiento.ubicacion.pasillo
+                                                : '-')
+                                                + (movimiento.ubicacion.tipoUbicacion != null
+                                                ? ' · ' + movimiento.ubicacion.tipoUbicacion
+                                                : '')}">
+                                        Pasillo A · Almacenamiento
+                                    </small>
+                                </td>
 
-                            <td th:text="${movimiento.observacion != null
-                                    && !movimiento.observacion.isEmpty()
-                                    ? movimiento.observacion
-                                    : '-'}">
-                                Observación
-                            </td>
+                                <td>
+                                    <strong th:text="${movimiento.usuario.nombre}">
+                                        Usuario
+                                    </strong>
+                                    <small class="table-detail"
+                                           th:text="${movimiento.usuario.rol}">
+                                        ROL
+                                    </small>
+                                </td>
 
-                        </tr>
+                                <td th:text="${movimiento.observacion != null
+                                        && !movimiento.observacion.isBlank()
+                                        ? movimiento.observacion
+                                        : '-'}">
+                                    Observación
+                                </td>
 
-                        <tr th:if="${movimientos == null
-                                || #lists.isEmpty(movimientos)}">
+                            </tr>
 
-                            <td colspan="7"
-                                class="empty">
-                                No hay recepciones registradas.
-                            </td>
+                            <tr th:if="${movimientos == null || #lists.isEmpty(movimientos)}">
+                                <td colspan="7" class="empty">
+                                    No hay recepciones registradas.
+                                </td>
+                            </tr>
 
-                        </tr>
+                        </tbody>
 
-                    </tbody>
-
-                </table>
+                    </table>
+                </div>
 
             </div>
 
@@ -325,5 +349,6 @@
 
 </div>
 
+<script th:src="@{/js/recepcion.js}"></script>
 </body>
 </html>

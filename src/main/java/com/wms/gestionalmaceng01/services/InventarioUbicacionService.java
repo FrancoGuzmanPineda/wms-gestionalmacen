@@ -42,6 +42,23 @@ public class InventarioUbicacionService {
                 .listarDisponiblesPorProducto(idProducto);
     }
 
+    @Transactional(readOnly = true)
+    public int obtenerStockPorProductoYUbicacion(
+            Integer idProducto,
+            Integer idUbicacion
+    ) {
+        if (idProducto == null || idUbicacion == null) {
+            return 0;
+        }
+
+        return inventarioRepository
+                .buscarCantidadPorProductoYUbicacion(
+                        idProducto,
+                        idUbicacion
+                )
+                .orElse(0);
+    }
+
     public Map<Integer, List<InventarioUbicacion>> agruparPorProducto(
             List<Producto> productos
     ) {
