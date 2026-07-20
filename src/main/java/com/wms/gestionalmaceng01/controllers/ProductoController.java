@@ -1,17 +1,22 @@
 package com.wms.gestionalmaceng01.controllers;
 
+import java.util.Optional;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.wms.gestionalmaceng01.models.Producto;
 import com.wms.gestionalmaceng01.models.Usuario;
 import com.wms.gestionalmaceng01.repository.UsuarioRepository;
 import com.wms.gestionalmaceng01.services.CategoriaService;
 import com.wms.gestionalmaceng01.services.ProductoService;
 import com.wms.gestionalmaceng01.services.TipoService;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/productos")

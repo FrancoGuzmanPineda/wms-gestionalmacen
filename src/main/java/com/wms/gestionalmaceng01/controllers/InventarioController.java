@@ -17,7 +17,6 @@ import com.wms.gestionalmaceng01.services.ProductoService;
 
 @Controller
 public class InventarioController {
-
     private final ProductoService productoService;
     private final InventarioUbicacionService inventarioUbicacionService;
     private final UsuarioRepository usuarioRepository;
